@@ -1,0 +1,5 @@
+# English strings go here for Rails i18n
+ru:
+  label_account_login: "Google аккаунт пользователя Совещание"
+  label_account_password: "Пароль от аккаунта"
+  # my_label: "My label"
