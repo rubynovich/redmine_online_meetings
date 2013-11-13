@@ -14,3 +14,4 @@
 
 gem 'gcal4ruby', :git => 'https://github.com/SeabourneConsulting/GCal4Ruby.git'
 gem 'google-api-client'
+gem 'sms24x7'

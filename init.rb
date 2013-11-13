@@ -23,7 +23,13 @@ require 'concerns/g_cal4_ruby_patch'
 GCal4Ruby::Event.send(:remove_const, :EVENT_XML)
 GCal4Ruby::Event.send(:include, GCal4RubyPatch::Event)
 GCal4Ruby::Service.send(:include, GCal4RubyPatch::Service)
-
+require 'concerns/online_meeting_agenda_patch'
+require 'concerns/online_meeting_mailer_patch'
+require 'concerns/online_meetings_meeting_agendas_controller_patch'
+Mailer.send(:include, OnlineMeetingMailerPatch)
+MeetingAgenda.send(:include, OnlineMeetingAgendaPatch)
+MeetingAgendasController.send(:include, OnlineMeetingsMeetingAgendasControllerPatch)
+OnlineMeetingsMeetingAgendasControllerPatch
 #[].each do |patch|
 #  require "patches/#{patch}_patch"
 #  class_eval(patch.to_s.camelize).send :include, class_eval("#{patch}_patch".camelize)

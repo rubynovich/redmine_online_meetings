@@ -1,9 +1,23 @@
 - @settings = {} unless @settings
-%p
-  %label= l(:label_account_login)
-  = text_field_tag("settings[account_login]", @settings[:account_login])
-%p
-  %label= l(:label_account_password)
-  = password_field_tag("settings[account_password]", @settings[:account_password])
+%fieldset
+  %label= l(:label_for_meeting)
+  %p
+    %label= l(:label_account_login)
+    = text_field_tag("settings[account_login]", @settings[:account_login])
+  %p
+    %label= l(:label_account_password)
+    = password_field_tag("settings[account_password]", @settings[:account_password])
+  %p
+    %label= l(:label_hangout_domain)
+    = text_field_tag("settings[hangout_domain]", @settings[:hangout_domain])
+%fieldset
+  %label= l(:label_for_sms)
+  %p
+    %label= l(:label_sms_account_login)
+    = text_field_tag("settings[account_sms_login]", @settings[:account_sms_login])
+  %p
+    %label= l(:label_sms_account_password)
+    = password_field_tag("settings[account_sms_password]", @settings[:account_sms_password])
+
 
 

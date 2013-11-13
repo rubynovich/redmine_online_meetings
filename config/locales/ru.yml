@@ -1,5 +1,20 @@
-# English strings go here for Rails i18n
+# Russian strings go here for Rails i18n
 ru:
+  label_is_online_meeting: "Online совещание"
   label_account_login: "Google аккаунт пользователя Совещание"
   label_account_password: "Пароль от аккаунта"
-  # my_label: "My label"
+  label_for_meeting: "Настройки учетной записи google для совещаний"
+  label_account_sms_login: "SMS24x7 аккаунт пользователя"
+  label_account_sms_password: "Пароль от аккаунта"
+  label_for_sms: "Настройки учетной записи SMS24x7 для совещаний"
+  mail_online_meeting_subject_format: "Приглашение на on-line совещание"
+  mail_online_meeting_title: "Приглашение на on-line совещание"
+  label_online_meeting_subject: "Тема совещания"
+  label_online_meeting_start_time: "Дата и время начала"
+  label_online_meeting_end_time: "Дата и время окончания"
+  label_online_meeting_author: "Организатор"
+  label_online_meeting_url: "Ссылка на конференцию"
+  mail_online_meeting_apply: "Перейти и присоединиться"
+  default_online_meeting_service_name: "Служба уведомлений online совещаний"
+  best_reards: "С Уважением,"
+

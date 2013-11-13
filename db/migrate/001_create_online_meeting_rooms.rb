@@ -6,8 +6,8 @@ class CreateOnlineMeetingRooms < ActiveRecord::Migration
       t.string :password
       t.datetime :start_time
       t.datetime :end_time
-      t.boolean :recording_now, default: false
-      t.string :vm_id
+      t.boolean :is_recording, default: false
+      t.string :vm_uid
     end
   end
 end

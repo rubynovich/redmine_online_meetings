@@ -1,3 +1,8 @@
 # English strings go here for Rails i18n
 en:
-  # my_label: "My label"
+  label_account_login: "Google account"
+  label_account_password: "Password"
+  label_for_meeting: "Google account setup"
+  label_account_sms_login: "SMS24x7 account"
+  label_account_sms_password: "Password"
+  label_for_sms: "Setup account SMS24x7 for meeting"

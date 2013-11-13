@@ -1,0 +1,34 @@
+%h1#= link_to l(:mail_online_meeting_title), @meeting_agenda.online_meeting_url
+%ul
+  %li
+    %b
+      = "#{l(:label_online_meeting_subject)}:"
+    %span
+      = @meeting_agenda.subject
+  %li
+    %b
+      = "#{l(:label_online_meeting_start_time)}:"
+    %span
+      = @meeting_agenda.start_time.strftime(t("time.formats.long"))
+  %li
+    %b
+      = "#{l(:label_online_meeting_end_time)}:"
+    %span
+      = @meeting_agenda.end_time.strftime(t("time.formats.long"))
+  %li
+    %b
+      = "#{l(:label_online_meeting_author)}:"
+    %span
+      = @meeting_agenda.author.name
+      = "(#{@meeting_agenda.author.job_title})"
+  %li
+    %b
+      = "#{l(:label_online_meeting_url)}:"
+    %span
+      #= link_to l(:mail_online_meeting_apply), @meeting_agenda.online_meeting_url
+%hr
+%p = l(:best_reards)
+- if @meeting_agenda.company
+  = @meeting_agenda.company.name
+- else
+  = t(:default_online_meeting_service_name)
