@@ -3,6 +3,17 @@ module GCal4RubyPatch
     extend ActiveSupport::Concern
     included do
       attr_accessor :hangout_domain
+      cattr_accessor :get
+      def self.get(force=nil)
+        service = self.class_variable_get(:@@get)
+        if service.nil? || force
+          service = GCal4Ruby::Service.new
+          service.hangout_domain = Setting[:plugin_redmine_online_meetings][:hangout_domain]
+          service.authenticate(Setting[:plugin_redmine_online_meetings][:account_login], Setting[:plugin_redmine_online_meetings][:account_password])
+          self.class_variable_set(:@@get, service)
+        end
+        service
+      end
     end
 
   end
@@ -56,6 +67,7 @@ module GCal4RubyPatch
             self.service.send_request(GData4Ruby::Request.new(:post, "#{@event_alternate_uri}&sprop=goo.rtc%3A3&sprop=goo.rtcParam%3A&sprop=goo.rtcDomain%3A#{@hangout_domain}&sf=true&output=js&secid=#{secid}&action=EDIT"))
           end
         end
+        self.reload
       end
     end
 
@@ -105,7 +117,7 @@ module GCal4RubyPatch
           when 'visibility'
             @visibility = ele.attributes["value"].gsub("http://schemas.google.com/g/2005#event.", "").to_sym
           when 'videoConference'
-            if @hangout_uid.nil? && ele.attributes["service"] == 'hangout' && ele.attributes["value"].present?
+            if ele.attributes["service"] == 'hangout' && ele.attributes["value"].present?
               @hangout_uid = ele.attributes["value"][/^(.*?)\./,1]
               @is_video_conference = true
               ele.elements.to_a('link').each do |el|

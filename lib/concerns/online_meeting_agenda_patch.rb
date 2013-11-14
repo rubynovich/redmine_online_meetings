@@ -1,7 +1,7 @@
 module OnlineMeetingAgendaPatch
   extend ActiveSupport::Concern
   included do
-    #after_create :notify_members_and_contacts
+    attr_accessible :is_online
   end
 
   def add_calendar_event
@@ -26,31 +26,39 @@ module OnlineMeetingAgendaPatch
         end
       end
     end
-    service = GCal4Ruby::Service.new
-    service.hangout_domain = Setting[:plugin_redmine_online_meetings][:hangout_domain]
-    service.authenticate(Setting[:plugin_redmine_online_meetings][:account_login], Setting[:plugin_redmine_online_meetings][:account_password])
-    event = GCal4Ruby::Event.new(service)
+    service = GCal4Ruby::Service.get
+    if self.online_meeting_uid
+      event = GCal4Ruby::Event.find(service, {:id => self.online_meeting_uid})
+    end
+    unless event
+      event = GCal4Ruby::Event.new(service)
+    end
     event.calendar = service.calendars.first
     event.title = self.subject
-    event.start_time = self.start_time
-    event.end_time = self.end_time
+    event.start_time = self.meet_on + self.start_time.seconds_since_midnight.to_i.second
+    event.end_time = self.meet_on + self.end_time.seconds_since_midnight.to_i.second
     event.visibility = :private
     event.status = :confirmed
     event.transparency = :busy
-    event.is_video_conference = true
+    event.is_video_conference = self.is_online?
     event.attendees = emails.map{|email| {email: email}}
     event.full_save
-    #raise event.inspect
-    self.update_attribute(:online_meeting_url, event.alternate_uri)
-    #self.update_attribute(:online_meeting_url, event.alternate_uri)
+    #event.to_xml.inspect
+    #raise event.alternate_uri.inspect
+    self.online_meeting_url = event.alternate_uri
+    self.online_meeting_uid = event.id
+    self.class.skip_callback(:save)
+    self.save(:validate => false)
+    self.class.set_callback(:save)
+    #self.update_attributes({:online_meeting_url => event.alternate_uri, :online_meeting_uid => File.basename(event.id)})
     return emails, mobile_phones
   end
 
   def notify_members_and_contacts
-    if self.is_online
+    if self.is_online?
       emails, mobile_phones = add_calendar_event
       emails.each do |email|
-        Mailer.apply_online_meeting(email,self).deliver!
+        Mailer.apply_online_meeting(email,self).deliver
       end
       if mobile_phones.count > 0
         SmsApi.login(Setting[:plugin_redmine_online_meetings][:account_sms_login], Setting[:plugin_redmine_online_meetings][:account_sms_password])

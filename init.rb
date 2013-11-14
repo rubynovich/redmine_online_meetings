@@ -25,11 +25,14 @@ GCal4Ruby::Event.send(:include, GCal4RubyPatch::Event)
 GCal4Ruby::Service.send(:include, GCal4RubyPatch::Service)
 require 'concerns/online_meeting_agenda_patch'
 require 'concerns/online_meeting_mailer_patch'
-require 'concerns/online_meetings_meeting_agendas_controller_patch'
+require 'meeting_agendas_controller_patch'
+
 Mailer.send(:include, OnlineMeetingMailerPatch)
 MeetingAgenda.send(:include, OnlineMeetingAgendaPatch)
-MeetingAgendasController.send(:include, OnlineMeetingsMeetingAgendasControllerPatch)
-OnlineMeetingsMeetingAgendasControllerPatch
+MeetingAgendasController.send(:include, OnlineMeetings::MeetingAgendasControllerPatch) unless MeetingAgendasController.included_modules.include? OnlineMeetings::MeetingAgendasControllerPatch
+
+#MeetingAgendasController.send(:include, MeetingAgendasControllerPatch)
+#MeetingAgendasControllerPatch
 #[].each do |patch|
 #  require "patches/#{patch}_patch"
 #  class_eval(patch.to_s.camelize).send :include, class_eval("#{patch}_patch".camelize)
