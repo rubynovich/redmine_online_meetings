@@ -21,10 +21,20 @@
   %div
     %label= l(:label_sms_account_password)
     = password_field_tag("settings[account_sms_password]", @settings[:account_sms_password])
+  %div
+    %label= l(:label_sms_phone)
+    = text_field_tag("settings[sms_phone]", @settings[:sms_phone])
 %fieldset
   %legend= l(:label_mail_message_text)
+  %div.help
+    \*
+    = l(:help_mail_message_text)
   %div
     = text_area_tag("settings[mail_message_text]", @settings[:mail_message_text])
-
-
-
+%fieldset
+  %legend= l(:label_sms_text)
+  %div.help
+    \*
+    = l(:help_sms_text)
+  %div
+    = text_area_tag("settings[sms_text]", @settings[:sms_text])

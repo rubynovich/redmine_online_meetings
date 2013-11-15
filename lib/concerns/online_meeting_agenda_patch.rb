@@ -7,22 +7,21 @@ module OnlineMeetingAgendaPatch
 
   def add_calendar_event
     emails = []
-    mobile_phones = []
+    mobile_phones = {}
     self.meeting_members.each do |member|
       if member.user
         emails << member.user.mail
       end
     end
-    self.meeting_contacts do |contact|
-      if contact.contact.email.present?
-        emails << contact.contact.email
-        #notify phone
-        contact.phone.split(',').each do |phone|
+
+    self.meeting_contacts.each do |cont|
+      if cont.contact.mail.present?
+        emails << cont.contact.mail
+        cont.contact.phone.split(',').each do |phone|
           phone.gsub!(/\D/,'')
           phone.gsub!(/^8/,'7')
           if phone =~ /^79/ && (phone.length == 11)
-            mobile_phones += phone
-            #send sms
+            mobile_phones.merge!({phone => cont.contact.email})
           end
         end
       end
@@ -51,7 +50,6 @@ module OnlineMeetingAgendaPatch
     self.class.skip_callback(:save)
     self.save(:validate => false)
     self.class.set_callback(:save)
-    #self.update_attributes({:online_meeting_url => event.alternate_uri, :online_meeting_uid => File.basename(event.id)})
     return emails, mobile_phones
   end
 
@@ -62,9 +60,13 @@ module OnlineMeetingAgendaPatch
         Mailer.apply_online_meeting(email,self).deliver
       end
       if mobile_phones.count > 0
-        SmsApi.login(Setting[:plugin_redmine_online_meetings][:account_sms_login], Setting[:plugin_redmine_online_meetings][:account_sms_password])
-        mobile_phones.each do |recipient_phone|
-          SmsApi.push_msg(recipient_phone, 'sms_text', {})
+        SmsApi.email = Setting[:plugin_redmine_online_meetings][:account_sms_login]
+        SmsApi.password = Setting[:plugin_redmine_online_meetings][:account_sms_password]
+        SmsApi.login
+        mobile_phones.each_pair do |recipient_phone, email|
+          sms_text = Setting[:plugin_redmine_online_meetings][:sms_text]
+          sms_text = sms_text.gsub('{{meet_on}}',self.meet_on.strftime('%d.%m.%Y')).gsub('{{start_time}}',self.start_time.strftime('%H:%M')).gsub('{{end_time}}',self.end_time.strftime('%H:%M')).gsub('{{org}}',self.meeting_company ? self.meeting_company.name : '').gsub('{{author}}', self.author.name).gsub('{{email}}', email)
+          SmsApi.push_msg(recipient_phone, sms_text, {:sender_name=> Setting[:plugin_redmine_online_meetings][:sms_phone]})
         end
       end
     end

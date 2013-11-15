@@ -1,1 +1,1 @@
-<% if item.is_online? -%>, <%= link_to "online", item.online_meeting_url, :target => :new -%><% end -%>
+<% if item.is_online? -%>, <%= item.online_meeting_url.present? ? link_to("online", item.online_meeting_url, :target => :new) : ('<span title="'+t(:must_send_request)+'">online</span>').html_safe -%><% end -%>
