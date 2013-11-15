@@ -9,12 +9,12 @@
     %b
       = "#{l(:label_online_meeting_start_time)}:"
     %span
-      = (@meeting_agenda.meet_on + @meeting_agenda.start_time.seconds_since_midnight.to_i.second).strftime(t("time.formats.long"))
+      = (@meeting_agenda.meet_on + @meeting_agenda.start_time.seconds_since_midnight.to_i.second).strftime("%d.%m.%Y %H:%M")
   %li
     %b
       = "#{l(:label_online_meeting_end_time)}:"
     %span
-      = (@meeting_agenda.meet_on + @meeting_agenda.end_time.seconds_since_midnight.to_i.second).strftime(t("time.formats.long"))
+      = (@meeting_agenda.meet_on + @meeting_agenda.end_time.seconds_since_midnight.to_i.second).strftime("%d.%m.%Y %H:%M")
   %li
     %b
       = "#{l(:label_online_meeting_author)}:"
@@ -27,6 +27,9 @@
     %span
       = link_to l(:mail_online_meeting_apply), @meeting_agenda.online_meeting_url
 %hr
+-if Setting[:plugin_redmine_online_meetings][:mail_message_text].present?
+  = Setting[:plugin_redmine_online_meetings][:mail_message_text]
+  %hr
 %p= l(:best_reards)
 - if @meeting_agenda.meeting_company
   = @meeting_agenda.meeting_company.name

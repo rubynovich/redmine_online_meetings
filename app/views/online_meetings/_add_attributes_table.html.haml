@@ -1,0 +1,3 @@
+- if item.is_online?
+  %th= l(:label_for_online_meeting)
+  %td= link_to l(:link_to_apply_hangouts), item.online_meeting_url, :target => :new

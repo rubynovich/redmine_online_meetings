@@ -1,23 +1,30 @@
 - @settings = {} unless @settings
+:css
+  fieldset div{margin: 0; padding: 5px;}
+  .tabular.settings label{margin-left: 0; padding: 5px;}
 %fieldset
-  %label= l(:label_for_meeting)
-  %p
+  %legend= l(:label_for_meeting)
+  %div
     %label= l(:label_account_login)
     = text_field_tag("settings[account_login]", @settings[:account_login])
-  %p
+  %div
     %label= l(:label_account_password)
     = password_field_tag("settings[account_password]", @settings[:account_password])
-  %p
+  %div
     %label= l(:label_hangout_domain)
     = text_field_tag("settings[hangout_domain]", @settings[:hangout_domain])
 %fieldset
-  %label= l(:label_for_sms)
-  %p
+  %legend= l(:label_for_sms)
+  %div
     %label= l(:label_sms_account_login)
     = text_field_tag("settings[account_sms_login]", @settings[:account_sms_login])
-  %p
+  %div
     %label= l(:label_sms_account_password)
     = password_field_tag("settings[account_sms_password]", @settings[:account_sms_password])
+%fieldset
+  %legend= l(:label_mail_message_text)
+  %div
+    = text_area_tag("settings[mail_message_text]", @settings[:mail_message_text])
 
 
 

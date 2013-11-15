@@ -2,6 +2,7 @@ module OnlineMeetingAgendaPatch
   extend ActiveSupport::Concern
   included do
     attr_accessible :is_online
+    #after_create :add_calendar_event
   end
 
   def add_calendar_event
@@ -55,8 +56,8 @@ module OnlineMeetingAgendaPatch
   end
 
   def notify_members_and_contacts
+    emails, mobile_phones = add_calendar_event
     if self.is_online?
-      emails, mobile_phones = add_calendar_event
       emails.each do |email|
         Mailer.apply_online_meeting(email,self).deliver
       end
