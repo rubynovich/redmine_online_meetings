@@ -1,4 +1,5 @@
 require_dependency 'meeting_agendas_controller'
+require 'smsc_api'
 module OnlineMeetings
   module MeetingAgendasControllerPatch
     def self.included(base)

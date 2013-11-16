@@ -55,21 +55,42 @@ module OnlineMeetingAgendaPatch
 
   def notify_members_and_contacts
     emails, mobile_phones = add_calendar_event
-    if self.is_online?
-      emails.each do |email|
-        Mailer.apply_online_meeting(email,self).deliver
-      end
-      if mobile_phones.count > 0
-        SmsApi.email = Setting[:plugin_redmine_online_meetings][:account_sms_login]
-        SmsApi.password = Setting[:plugin_redmine_online_meetings][:account_sms_password]
-        SmsApi.login
-        mobile_phones.each_pair do |recipient_phone, email|
-          sms_text = Setting[:plugin_redmine_online_meetings][:sms_text]
-          sms_text = sms_text.gsub('{{meet_on}}',self.meet_on.strftime('%d.%m.%Y')).gsub('{{start_time}}',self.start_time.strftime('%H:%M')).gsub('{{end_time}}',self.end_time.strftime('%H:%M')).gsub('{{org}}',self.meeting_company ? self.meeting_company.name : '').gsub('{{author}}', self.author.name).gsub('{{email}}', email)
-          SmsApi.push_msg(recipient_phone, sms_text, {:sender_name=> Setting[:plugin_redmine_online_meetings][:sms_phone]})
-        end
+    emails.each do |email|
+      message_text = self.text_replace(Setting[:plugin_redmine_online_meetings][:mail_message_text].dup, email)
+      Mailer.apply_online_meeting(email,self, message_text).deliver
+    end
+    if mobile_phones.count > 0
+      #SmsApi.email = Setting[:plugin_redmine_online_meetings][:account_sms_login]
+      #SmsApi.password = Setting[:plugin_redmine_online_meetings][:account_sms_password]
+      #SmsApi.login
+      sms = SMSC.new()
+      sms.smsc_login = Setting[:plugin_redmine_online_meetings][:account_sms_login]
+      sms.smsc_password = Digest::MD5.hexdigest(Setting[:plugin_redmine_online_meetings][:account_sms_password])
+      mobile_phones.each_pair do |recipient_phone, email|
+        sms_text = (self.is_online? ? Setting[:plugin_redmine_online_meetings][:sms_online_text] : Setting[:plugin_redmine_online_meetings][:sms_text]).dup
+        sms_text = self.text_replace(sms_text, email)
+        sms.send_sms(recipient_phone, sms_text, 0, 0, 0, 1, Setting[:plugin_redmine_online_meetings][:sms_phone])
       end
     end
+  end
+
+  def text_replace(text, email="")
+    text.gsub!('{{meet_on}}', self.meet_on.strftime('%d.%m.%Y'))
+    text.gsub!('{{start_time}}',self.start_time.strftime('%H:%M'))
+    text.gsub!('{{end_time}}',self.end_time.strftime('%H:%M'))
+    text.gsub!('{{org}}',self.meeting_company ? self.meeting_company.name : '')
+    text.gsub!('{{author}}', self.author.name)
+    text.gsub!('{{email}}', email)
+    text.gsub!(/{{org\((.*)\)}}/,self.meeting_company ? self.meeting_company.name : $1)
+    text.gsub!('{{subject}}', self.subject)
+    if self.is_external?
+      text.gsub!('{{external_text}}',l(:external_text))
+      text.gsub!('{{address}}', "#{l(:external_template) % [self.external_company.try(:name), self.place]}")
+    else
+      text.gsub!('{{external_text}}',l(:internal_text))
+      text.gsub!('{{address}}', "#{l(:internal_template) % [self.place]}")
+    end
+    text
   end
 
 end

@@ -27,8 +27,8 @@
     %span
       = link_to l(:mail_online_meeting_apply), @meeting_agenda.online_meeting_url
 %hr
--if Setting[:plugin_redmine_online_meetings][:mail_message_text].present?
-  = Setting[:plugin_redmine_online_meetings][:mail_message_text].gsub('{{meet_on}}',@meeting_agenda.meet_on.strftime('%d.%m.%Y')).gsub('{{start_time}}',@meeting_agenda.start_time.strftime('%H:%M')).gsub('{{end_time}}',@meeting_agenda.end_time.strftime('%H:%M')).gsub('{{org}}',@meeting_agenda.meeting_company ? @meeting_agenda.meeting_company.name : '').gsub('{{author}}', @meeting_agenda.author.name)
+-if @message_text.present?
+  = @message_text
   %hr
 %p= l(:best_reards)
 - if @meeting_agenda.meeting_company

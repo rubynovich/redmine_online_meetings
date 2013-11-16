@@ -38,3 +38,10 @@
     = l(:help_sms_text)
   %div
     = text_area_tag("settings[sms_text]", @settings[:sms_text])
+%fieldset
+  %legend= l(:label_online_sms_text)
+  %div.help
+    \*
+    = l(:help_sms_text)
+  %div
+    = text_area_tag("settings[sms_online_text]", @settings[:sms_online_text])
