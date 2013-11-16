@@ -56,7 +56,7 @@ module OnlineMeetingAgendaPatch
   def notify_members_and_contacts
     emails, mobile_phones = add_calendar_event
     emails.each do |email|
-      message_text = self.text_replace(Setting[:plugin_redmine_online_meetings][:mail_message_text].dup, email)
+      message_text = self.text_replace(Setting[:plugin_redmine_online_meetings][:mail_message_text].dup || "", email)
       Mailer.apply_online_meeting(email,self, message_text).deliver
     end
     if mobile_phones.count > 0
@@ -81,7 +81,7 @@ module OnlineMeetingAgendaPatch
     text.gsub!('{{org}}',self.meeting_company ? self.meeting_company.name : '')
     text.gsub!('{{author}}', self.author.name)
     text.gsub!('{{email}}', email)
-    text.gsub!(/{{org\((.*)\)}}/,self.meeting_company ? self.meeting_company.name : $1)
+    text.gsub!(/{{org\((.*)\)}}/, self.meeting_company ? self.meeting_company.try(:name) : ($1 || ""))
     text.gsub!('{{subject}}', self.subject)
     if self.is_external?
       text.gsub!('{{external_text}}',l(:external_text))
