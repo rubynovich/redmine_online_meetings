@@ -64,7 +64,9 @@ module GCal4RubyPatch
         if html = doc.body
           if secid = html[/secid\\x3e\\x3cvalue\\x3e(.*)\\x3c\/value\\x3e\\x3c\/secid/,1]
             @hangout_domain ||= self.service.hangout_domain
-            self.service.send_request(GData4Ruby::Request.new(:post, "#{@event_alternate_uri}&sprop=goo.rtc%3A3&sprop=goo.rtcParam%3A&sprop=goo.rtcDomain%3A#{@hangout_domain}&sf=true&output=js&secid=#{secid}&action=EDIT"))
+            google_request = GData4Ruby::Request.new(:post, "#{@event_alternate_uri}&sprop=goo.rtc%3A3&sprop=goo.rtcParam%3A&sprop=goo.rtcDomain%3A#{@hangout_domain}&sf=true&output=js&secid=#{secid}&action=EDIT")
+            google_request.calculate_length!
+            self.service.send_request(google_request)
           end
         end
         self.reload
