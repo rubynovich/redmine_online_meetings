@@ -35,8 +35,8 @@ module OnlineMeetingAgendaPatch
     end
     event.calendar = service.calendars.first
     event.title = self.subject
-    event.start_time = self.meet_on + self.start_time.seconds_since_midnight.to_i.second
-    event.end_time = self.meet_on + self.end_time.seconds_since_midnight.to_i.second
+    event.start_time = (self.meet_on + self.start_time.seconds_since_midnight.to_i.second).utc
+    event.end_time = (self.meet_on + self.end_time.seconds_since_midnight.to_i.second).utc
     event.visibility = :private
     event.status = :confirmed
     event.transparency = :busy
