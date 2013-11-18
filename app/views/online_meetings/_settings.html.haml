@@ -11,6 +11,9 @@
     %label= l(:label_account_password)
     = password_field_tag("settings[account_password]", @settings[:account_password])
   %div
+    %label= l(:label_fix_time)
+    = text_field_tag("settings[fix_time]", @settings[:fix_time])
+  %div
     %label= l(:label_hangout_domain)
     = text_field_tag("settings[hangout_domain]", @settings[:hangout_domain])
 %fieldset

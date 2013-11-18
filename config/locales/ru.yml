@@ -31,3 +31,4 @@ ru:
   external_template: "Совещание состоится в компании %s по адресу: %s"
   internal_template: "Место проведения: %s"
   internal_text: ""
+  label_fix_time: "Сдвигать время в календаре на (минут)"

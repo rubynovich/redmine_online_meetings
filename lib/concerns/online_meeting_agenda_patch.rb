@@ -35,8 +35,9 @@ module OnlineMeetingAgendaPatch
     end
     event.calendar = service.calendars.first
     event.title = self.subject
-    event.start_time = (self.meet_on + self.start_time.seconds_since_midnight.to_i.second).utc
-    event.end_time = (self.meet_on + self.end_time.seconds_since_midnight.to_i.second).utc
+    fix_time = (Setting[:plugin_redmine_online_meetings][:fix_time].try(:to_i) || 0).minutes
+    event.start_time = (self.meet_on + self.start_time.seconds_since_midnight.to_i.second).utc + fix_time
+    event.end_time = (self.meet_on + self.end_time.seconds_since_midnight.to_i.second).utc + fix_time
     event.visibility = :private
     event.status = :confirmed
     event.transparency = :busy
@@ -55,9 +56,11 @@ module OnlineMeetingAgendaPatch
 
   def notify_members_and_contacts
     emails, mobile_phones = add_calendar_event
-    emails.each do |email|
-      message_text = self.text_replace(Setting[:plugin_redmine_online_meetings][:mail_message_text].dup || "", email)
-      Mailer.apply_online_meeting(email,self, message_text).deliver
+    if self.is_online?
+      emails.each do |email|
+        message_text = self.text_replace(Setting[:plugin_redmine_online_meetings][:mail_message_text].dup || "", email)
+        Mailer.apply_online_meeting(email,self, message_text).deliver
+      end
     end
     if mobile_phones.count > 0
       #SmsApi.email = Setting[:plugin_redmine_online_meetings][:account_sms_login]
