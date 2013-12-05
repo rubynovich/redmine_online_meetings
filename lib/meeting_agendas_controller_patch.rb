@@ -23,6 +23,18 @@ module OnlineMeetings
     end
 
     module InstanceMethods
+
+      def issue
+        find_object
+        (render_403; return false) unless can_show_agenda?(@object) || (@object.meeting_members.map{|member| member.user_id}).include?(User.current.id)
+        if meeting_member = @object.meeting_members.where({user_id: User.current.id}).first
+          redirect_to controller: 'issues', action: 'show', id: meeting_member.issue_id
+        else
+          (render_403; return false)
+        end
+        #
+      end
+
       def send_invites_with_patch
         (render_403; return false) unless can_send_invites?(@object)
         @object.notify_members_and_contacts

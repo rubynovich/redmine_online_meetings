@@ -2,6 +2,12 @@
 :css
   fieldset div{margin: 0; padding: 5px;}
   .tabular.settings label{margin-left: 0; padding: 5px;}
+
+%fieldset
+  %legend= l(:label_for_failure_meeting)
+  %div
+    %label= l(:label_meeting_failure_issue_status)
+    = select_tag("settings[failure_issue_status]", options_from_collection_for_select(IssueStatus.all, :id, :name, (@settings[:failure_issue_status] || nil).try(:to_i)), :prompt => t(:prompt_please_select))
 %fieldset
   %legend= l(:label_for_meeting)
   %div
@@ -34,6 +40,13 @@
     = l(:help_mail_message_text)
   %div
     = text_area_tag("settings[mail_message_text]", @settings[:mail_message_text])
+%fieldset
+  %legend= l(:label_calendar_message_text)
+  %div.help
+    \*
+    = l(:help_calendar_message_text)
+  %div
+    = text_area_tag("settings[calendar_message_text]", @settings[:calendar_message_text])
 %fieldset
   %legend= l(:label_sms_text)
   %div.help

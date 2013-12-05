@@ -10,9 +10,10 @@ module OnlineMeetingAgendaPatch
     mobile_phones = {}
     self.meeting_members.each do |member|
       if member.user
-        emails << member.user.mail
+        emails << member.user.mail unless [(Setting[:plugin_redmine_online_meetings][:failure_issue_status] || nil).try(:to_i)].include?(member.issue.status_id)
       end
     end
+    #internal_emails = emails.dup
 
     self.meeting_contacts.each do |cont|
       if cont.contact.mail.present?
@@ -43,6 +44,7 @@ module OnlineMeetingAgendaPatch
     event.transparency = :busy
     event.is_video_conference = self.is_online?
     event.attendees = emails.map{|email| {email: email}}
+    event.content = self.text_replace(Setting[:plugin_redmine_online_meetings][:calendar_message_text].dup || "")
     event.full_save
     #event.to_xml.inspect
     #raise event.alternate_uri.inspect
@@ -78,6 +80,7 @@ module OnlineMeetingAgendaPatch
   end
 
   def text_replace(text, email="")
+    text.gsub!('{{meeting_agenda}}', self.id.to_s)
     text.gsub!('{{meet_on}}', self.meet_on.strftime('%d.%m.%Y'))
     text.gsub!('{{start_time}}',self.start_time.strftime('%H:%M'))
     text.gsub!('{{end_time}}',self.end_time.strftime('%H:%M'))
