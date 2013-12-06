@@ -62,7 +62,7 @@ module OnlineMeetingAgendaPatch
     emails, mobile_phones = add_calendar_event
     if self.is_online?
       emails.each do |email|
-        message_text = self.text_replace(Setting[:plugin_redmine_online_meetings][:mail_message_text].dup || "", email)
+        message_text = self.text_replace(Setting[:plugin_redmine_online_meetings][:mail_message_text], email)
         Mailer.apply_online_meeting(email,self, message_text).deliver
       end
     end
@@ -81,7 +81,8 @@ module OnlineMeetingAgendaPatch
     end
   end
 
-  def text_replace(text, email="")
+  def text_replace(text_d, email="")
+    text = (text_d || '').dup
     text.gsub!('{{meeting_agenda}}', self.id.to_s)
     text.gsub!('{{meet_on}}', self.meet_on.strftime('%d.%m.%Y'))
     text.gsub!('{{start_time}}',self.start_time.strftime('%H:%M'))
