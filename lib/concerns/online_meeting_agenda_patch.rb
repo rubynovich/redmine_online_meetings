@@ -10,10 +10,11 @@ module OnlineMeetingAgendaPatch
     mobile_phones = {}
     self.meeting_members.each do |member|
       if member.user
-        emails << member.user.mail unless [(Setting[:plugin_redmine_online_meetings][:failure_issue_status] || nil).try(:to_i)].include?(member.issue.status_id)
+        emails << member.user.mail unless [(Setting[:plugin_redmine_online_meetings][:failure_issue_status] || nil).try(:to_i)].include?(member.issue.try(:status_id))
       end
     end
     #internal_emails = emails.dup
+    #raise emails.inspect
 
     self.meeting_contacts.each do |cont|
       if cont.contact.mail.present?
@@ -27,6 +28,7 @@ module OnlineMeetingAgendaPatch
         end
       end
     end
+    #raise emails.inspect
     service = GCal4Ruby::Service.get
     if self.online_meeting_uid
       event = GCal4Ruby::Event.find(service, {:id => self.online_meeting_uid})
