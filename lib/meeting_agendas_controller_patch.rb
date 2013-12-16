@@ -1,5 +1,6 @@
 require_dependency 'meeting_agendas_controller'
 require 'smsc_api'
+require 'videoserver_api'
 module OnlineMeetings
   module MeetingAgendasControllerPatch
     def self.included(base)
@@ -32,7 +33,21 @@ module OnlineMeetings
         else
           (render_403; return false)
         end
-        #
+      end
+
+      def show_avaiable_servers
+        respond_to do |format|
+          format.json{render json: VideoserverApi.call_api("get_avaiables")}
+          format.html{render json: VideoserverApi.call_api("get_avaiables")["count"]}
+        end
+      end
+
+      def start_record
+        find_object
+        if @object.is_online? && (! @object.is_recording) && ((VideoserverApi.call_api("get_avaiables")["count"] || 0).try(:to_i) > 0)
+
+
+        end
       end
 
       def send_invites_with_patch
