@@ -1,3 +1,9 @@
 - if item.is_online?
   %th= l(:label_for_online_meeting)
-  %td= item.online_meeting_url.present? ? link_to(l(:link_to_apply_hangouts), item.online_meeting_url, :target => :new) : ('<span title="'+t(:must_send_request)+'">'+l(:link_to_apply_hangouts)+'</span>').html_safe
+  - if item.online_meeting_url.present?
+    %td
+      = link_to(l(:link_to_apply_hangouts), item.online_meeting_url, :target => :new)
+      #= link_to(l(:link_to_recoed_hangouts), start_record_meeting_agenda(), :target => :new)
+  - else
+    %td
+      %span{title: t(:must_send_request)}= l(:link_to_apply_hangouts)

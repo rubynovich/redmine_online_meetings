@@ -45,8 +45,7 @@ module OnlineMeetings
       def start_record
         find_object
         if @object.is_online? && (! @object.is_recording) && ((VideoserverApi.call_api("get_avaiables")["count"] || 0).try(:to_i) > 0)
-
-
+          VideoserverApi.call_api(@object.online_meeting_uid.to_s + "/start_record")
         end
       end
 
