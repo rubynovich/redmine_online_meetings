@@ -36,3 +36,10 @@ ru:
   label_fix_time: "Сдвигать время в календаре на (минут)"
   label_meeting_failure_issue_status: "Статус отказа от участия в совещании"
   label_for_failure_meeting: "Отказ от совещания"
+  label_videoserver_settings: "Настройки API видеосервера для записи совещаний"
+  label_videoserver_host: "Хост(IP)"
+  label_videoserver_port: "Порт"
+  label_videoserver_https: "Использовать HTTPS"
+  label_videoserver_username: "Пользователь"
+  label_videoserver_password: "Пароль"
+

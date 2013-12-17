@@ -61,3 +61,21 @@
     = l(:help_sms_text)
   %div
     = text_area_tag("settings[sms_online_text]", @settings[:sms_online_text])
+%fieldset
+  %legend= l(:label_videoserver_settings)
+  %div
+    %label= l(:label_videoserver_host)
+    = text_field_tag("settings[videoserver_host]", @settings[:videoserver_host])
+  %div
+    %label= l(:label_videoserver_port)
+    = text_field_tag("settings[videoserver_port]", @settings[:videoserver_port])
+  %div
+    %label= l(:videoserver_https)
+    = hidden_field_tag("settings[videoserver_https]", "0")
+    = check_box_tag("settings[videoserver_https]", "1", @settings[:videoserver_https])
+  %div
+    %label= l(:label_videoserver_username)
+    = text_field_tag("settings[videoserver_username]", @settings[:videoserver_username])
+  %div
+    %label= l(:label_videoserver_password)
+    = password_field_tag("settings[videoserver_password]", @settings[:videoserver_password])
