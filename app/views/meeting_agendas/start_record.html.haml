@@ -1,0 +1,4 @@
+%div
+  = link_to(l(:link_to_stop_record_hangouts), stop_record_meeting_agenda_path(@object))
+%div
+  %iframe{:height => "484", :src => "http://#{Setting[:plugin_redmine_online_meetings][:videoserver_host]}:#{26000+@object.server_id}/vncrun.html?host=#{Setting[:plugin_redmine_online_meetings][:videoserver_host]}&port=#{26000+@object.server_id}&password=12345678", :width => "640"}

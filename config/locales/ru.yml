@@ -42,4 +42,7 @@ ru:
   label_videoserver_https: "Использовать HTTPS"
   label_videoserver_username: "Пользователь"
   label_videoserver_password: "Пароль"
+  link_to_start_record_hangouts: "Начать запись"
+  link_to_stop_record_hangouts: "Остановить запись"
+  no_free_servers: "Нет доступных серверов"
 

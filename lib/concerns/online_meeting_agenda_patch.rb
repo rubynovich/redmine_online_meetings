@@ -58,6 +58,11 @@ module OnlineMeetingAgendaPatch
     return emails, mobile_phones
   end
 
+  def recordable?(by_user=nil)
+    user_condition = by_user.nil? ? true : (by_user.id == self.asserter_id)
+    (! self.is_recording) && self.is_online? && user_condition && self.valid?
+  end
+
   def notify_members_and_contacts
     emails, mobile_phones = add_calendar_event
     if self.is_online?

@@ -37,15 +37,37 @@ module OnlineMeetings
 
       def show_avaiable_servers
         respond_to do |format|
-          format.json{render json: VideoserverApi.call_api("get_avaiables")}
-          format.html{render json: VideoserverApi.call_api("get_avaiables")["count"]}
+          format.json{render json: VideoserverApi.call_api("avaiables")}
+          format.html{render json: VideoserverApi.call_api("avaiables")["count"]}
         end
       end
 
       def start_record
         find_object
-        if @object.is_online? && (! @object.is_recording) && ((VideoserverApi.call_api("get_avaiables")["count"] || 0).try(:to_i) > 0)
-          VideoserverApi.call_api(@object.online_meeting_uid.to_s + "/start_record")
+        if @object.recordable?(User.current) && ((VideoserverApi.call_api("avaiables")["count"] || 0).try(:to_i) > 0)
+          @video = VideoserverApi.call_api(File.basename(@object.online_meeting_url) + "/start_record")
+          @object.is_recording = true
+          @object.record_video_id = (@video['id'] || 0).to_i
+          @object.server_id = (@video['server_id'] || 0).to_i
+          @object.save
+        end
+        respond_to do |format|
+          format.json {render json: {status: @video}}
+          format.html {render}
+        end
+      end
+
+      def stop_record
+        find_object
+        if @object.is_recording?
+          video = VideoserverApi.call_api(@object.record_video_id.to_s + "/stop_record")
+          MeetingAgenda.where(:id=>@object.id).update_all(["is_recording = false"])
+          #@object.is_recording = false
+          #@obejctrecord_video_id: nil)
+        end
+        respond_to do |format|
+          format.json {render json: {status: :ok}}
+          format.html {redirect_to @object}
         end
       end
 

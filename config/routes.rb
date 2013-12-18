@@ -4,5 +4,6 @@ resources :meeting_agendas do
   member do
     get 'issue'
     get 'start_record'
+    get 'stop_record'
   end
 end

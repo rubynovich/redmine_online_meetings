@@ -3,7 +3,10 @@
   - if item.online_meeting_url.present?
     %td
       = link_to(l(:link_to_apply_hangouts), item.online_meeting_url, :target => :new)
-      #= link_to(l(:link_to_recoed_hangouts), start_record_meeting_agenda(), :target => :new)
+      - if item.is_recording?
+        = link_to(l(:link_to_stop_record_hangouts), stop_record_meeting_agenda_path(item))
+      - elsif item.recordable?(User.current)
+        = ((VideoserverApi.call_api("avaiables")["count"] || 0).to_i > 0) ? link_to(l(:link_to_start_record_hangouts), start_record_meeting_agenda_path(item), :id=>'start_video_record') : l(:no_free_servers)
   - else
     %td
       %span{title: t(:must_send_request)}= l(:link_to_apply_hangouts)
