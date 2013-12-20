@@ -4,9 +4,19 @@
     %td
       = link_to(l(:link_to_apply_hangouts), item.online_meeting_url, :target => :new)
       - if item.is_recording?
+        = link_to(l(:link_to_open_record_hangouts), start_record_meeting_agenda_path(item), :id=>'open_video_record')
         = link_to(l(:link_to_stop_record_hangouts), stop_record_meeting_agenda_path(item))
       - elsif item.recordable?(User.current)
         = ((VideoserverApi.call_api("avaiables")["count"] || 0).to_i > 0) ? link_to(l(:link_to_start_record_hangouts), start_record_meeting_agenda_path(item), :id=>'start_video_record') : l(:no_free_servers)
   - else
     %td
       %span{title: t(:must_send_request)}= l(:link_to_apply_hangouts)
+  - if item.online_meeting_url.present?
+    - cache_recordings = VideoserverApi.call_api("recordings/by_hangout_id/#{File.basename(item.online_meeting_url)}/list")["scope"]
+    //%td{colspan: 2}= "recordings/by_hangout_id/#{File.basename(item.online_meeting_url)}/list"
+    - if (cache_recordings || []).count > 0
+      %tr
+        %th= l(:label_for_online_meeting_recordings)
+        %td
+          - cache_recordings.each do |video|
+            = link_to l(:label_for_online_meeting_record)+" от #{(video['created_at'].to_time + (Setting[:plugin_redmine_online_meetings][:time_fix] || 0).to_i.minutes).try(:to_time).try(:strftime, "%d-%m-%Y %H:%M")}", "http#{'s' if  (Setting[:plugin_redmine_online_meetings][:videoserver_https] || '').to_s == "1"}://#{Setting[:plugin_redmine_online_meetings][:videoserver_host]}#{':'+(Setting[:plugin_redmine_online_meetings][:videoserver_port] || '').to_s unless Setting[:plugin_redmine_online_meetings][:videoserver_port] || Setting[:plugin_redmine_online_meetings][:videoserver_port].blank? || Setting[:plugin_redmine_online_meetings][:videoserver_port].try(:to_i) == 80}/videos/#{video['filename']}.ogv"

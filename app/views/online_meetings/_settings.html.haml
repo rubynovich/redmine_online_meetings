@@ -2,7 +2,6 @@
 :css
   fieldset div{margin: 0; padding: 5px;}
   .tabular.settings label{margin-left: 0; padding: 5px;}
-
 %fieldset
   %legend= l(:label_for_failure_meeting)
   %div
@@ -59,8 +58,21 @@
   %div.help
     \*
     = l(:help_sms_text)
-  %div
-    = text_area_tag("settings[sms_online_text]", @settings[:sms_online_text])
+  %div= text_area_tag("settings[sms_online_text]", @settings[:sms_online_text])
+%fieldset
+  %legend= l(:label_videorecording_settings)
+  %p
+    %label= l(:label_videorecording_time_fix)
+    = text_field_tag("settings[time_fix]", @settings[:time_fix])
+  %p
+    %label= l(:label_videorecording_timeout)
+    = text_field_tag("settings[timeout]", @settings[:timeout])
+  %p
+    %label= l(:label_videorecording_continue_time)
+    = text_field_tag("settings[continue_time]", @settings[:continue_time])
+  %p
+    %label= l(:label_videorecording_continue_time_notify)
+    = text_field_tag("settings[continue_time_notify]", @settings[:continue_time_notify])
 %fieldset
   %legend= l(:label_videoserver_settings)
   %div
@@ -72,7 +84,7 @@
   %div
     %label= l(:videoserver_https)
     = hidden_field_tag("settings[videoserver_https]", "0")
-    = check_box_tag("settings[videoserver_https]", "1", @settings[:videoserver_https])
+    = check_box_tag("settings[videoserver_https]", "1", @settings[:videoserver_https] == "1")
   %div
     %label= l(:label_videoserver_username)
     = text_field_tag("settings[videoserver_username]", @settings[:videoserver_username])
