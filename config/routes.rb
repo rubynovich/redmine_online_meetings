@@ -5,5 +5,6 @@ resources :meeting_agendas do
     get 'issue'
     get 'start_record'
     get 'stop_record'
+    post 'continue_record'
   end
 end

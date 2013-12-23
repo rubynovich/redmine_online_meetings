@@ -42,6 +42,14 @@ module OnlineMeetings
         end
       end
 
+      def continue_record
+        unless params[:continue_time].blank? || params[:continue_time].to_i == 0
+          #update video
+          video = VideoserverApi.call_api("recordings/#{@object.id}/update", :post, {'video[stop_time]' => Time.now.to_i + params[:continue_time].to_i})
+          render json: {minutes: params[:continue_time], stop_time: video['stop_time'], id: video['id']}
+        end
+      end
+
       def start_record
         find_object
         if @object.recordable?(User.current) && ((VideoserverApi.call_api("avaiables")["count"] || 0).try(:to_i) > 0)

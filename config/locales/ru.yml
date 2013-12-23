@@ -53,3 +53,4 @@ ru:
   label_videorecording_continue_time_notify: "Оповещать о продлении за (минут) до окончании записи"
   label_videorecording_settings: "Параметры видеозаписи"
   label_videorecording_time_fix: "Сдвигать время для отображения записей на (минут)"
+  prompt_continue_time: ""

@@ -21,13 +21,22 @@ class VideoserverApi
     self.api.call_api(function)
   end
 
-  def call_api(function)
-    c = Curl::Easy.new("http#{'s' if @use_https}://#{@host}#{':'+(@port || '')  .to_s unless self.port.blank? || @port.try(:to_i) == 80}/api/#{function}")
+  def call_api(function, method=:get, data={})
+    url = "http#{'s' if @use_https}://#{@host}#{':'+(@port || '')  .to_s unless self.port.blank? || @port.try(:to_i) == 80}/api/#{function}"
+    c = Curl::Easy.new(url)
     #raise "http#{'s' if @use_https}://#{@host}#{':'+(@port || '')  .to_s unless self.port.blank? || @port.try(:to_i) == 80}/api/#{function}"
     c.http_auth_types = :digest
     c.username = @username
     c.password = @password
-    c.perform
+    if method == :get
+      c.perform
+    elsif [:post, :put].include?(method)
+      pars = []
+      data.each_pair do |name, content|
+        pars << Curl::PostField.content(name,content)
+      end
+      method.post? ? c.post(pars) : c.put(url, pars)
+    end
     begin
       JSON.parse(c.body_str)
     rescue

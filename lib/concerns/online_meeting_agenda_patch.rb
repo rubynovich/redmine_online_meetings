@@ -63,6 +63,17 @@ module OnlineMeetingAgendaPatch
     (! self.is_recording) && self.is_online? && user_condition && self.valid?
   end
 
+
+  def end_time_utc
+    #(Setting[:plugin_redmine_online_meetings][:fix_time].try(:to_i) || 0).minutes
+    (self.meet_on + self.end_time.seconds_since_midnight.to_i.second).utc
+  end
+
+  def start_time_utc
+    #(Setting[:plugin_redmine_online_meetings][:fix_time].try(:to_i) || 0).minutes
+    (self.meet_on + self.start_time.seconds_since_midnight.to_i.second).utc
+  end
+
   def notify_members_and_contacts
     emails, mobile_phones = add_calendar_event
     if self.is_online?

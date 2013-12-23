@@ -2,3 +2,33 @@
   = link_to(l(:link_to_stop_record_hangouts), stop_record_meeting_agenda_path(@object))
 %div
   %iframe{:height => "484", :src => "http://#{Setting[:plugin_redmine_online_meetings][:videoserver_host]}:#{26000+@object.server_id}/vncrun.html?host=#{Setting[:plugin_redmine_online_meetings][:videoserver_host]}&port=#{26000+@object.server_id}&password=12345678", :width => "640"}
+:javascript
+  var continue_time = #{Setting[:plugin_redmine_online_meetings][:continue_time]}
+  var cont_to = function(minutes, stop_time) {
+    setTimeout(function(){
+        var current_time = parseInt(new Date().getTime() / 1000);
+        var add_minutes = null;
+        console.log({
+          current_time: current_time,
+          continue_time: Setting[:plugin_redmine_online_meetings][:continue_time].to_i
+          continue_time_notify: Setting[:plugin_redmine_online_meetings][:continue_time_notify]
+        })
+        if ((current_time+#{((Setting[:plugin_redmine_online_meetings][:continue_time] || 0).to_i +(Setting[:plugin_redmine_online_meetings][:continue_time_notify] || 0).to_i) * 60 }) < stop_time){
+          add_minutes = continue_time;
+        } else {
+          add_minutes = parseInt(prompt('#{l(:prompt_continue_time)}',continue_time));
+        }
+        if (add_minutes){
+          $.post('#{continue_record_meeting_agenda_path(@object)}', { continue_time: continue_time },function( data ){
+            if (#{Setting[:plugin_redmine_online_meetings][:continue_time_notify] || 0} > 0){
+              cont_to(data.minutes - #{Setting[:plugin_redmine_online_meetings][:continue_time_notify] || 0});
+            }
+          },"json");
+        }
+      }, minutes*60000)
+    }
+  }
+
+  var stop_time = #{@object.end_time_utc.to_i}
+  cont_to(#{Setting[:plugin_redmine_online_meetings][:continue_time] || 1});
+
