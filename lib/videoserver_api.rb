@@ -16,9 +16,9 @@ class VideoserverApi
     @use_https = (Setting[:plugin_redmine_online_meetings][:videoserver_https] || '').to_s == "1"
   end
 
-  def self.call_api(function)
+  def self.call_api(function, method=:get, data={})
     self.api ||= self.new
-    self.api.call_api(function)
+    self.api.call_api(function, method, data)
   end
 
   def call_api(function, method=:get, data={})
@@ -38,9 +38,11 @@ class VideoserverApi
       method.post? ? c.post(pars) : c.put(url, pars)
     end
     begin
-      JSON.parse(c.body_str)
+      res = JSON.parse(c.body_str)
     rescue
-      {}
+      res = {error_content: c.body_str}
     end
+    Rails.logger.info   res.inspect
+    res
   end
 end
