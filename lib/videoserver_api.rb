@@ -35,7 +35,7 @@ class VideoserverApi
       data.each_pair do |name, content|
         pars << Curl::PostField.content(name,content)
       end
-      method.post? ? c.post(pars) : c.put(url, pars)
+      method == :post ? c.post(pars) : c.put(url, pars)
     end
     begin
       res = JSON.parse(c.body_str)
