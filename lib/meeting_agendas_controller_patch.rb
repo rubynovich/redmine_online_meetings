@@ -43,6 +43,7 @@ module OnlineMeetings
       end
 
       def continue_record
+        find_object
         unless params[:continue_time].blank? || params[:continue_time].to_i == 0
           #update video
           video = VideoserverApi.call_api("recordings/#{@object.id}/update", :post, {'video[stop_time]' => Time.now.to_i + params[:continue_time].to_i})
