@@ -1,7 +1,7 @@
 %div
-  = link_to(l(:link_to_stop_record_hangouts), stop_record_meeting_agenda_path(@object))
-%div
   %iframe{:height => "484", :src => "http://#{Setting[:plugin_redmine_online_meetings][:videoserver_host]}:#{26000+@object.server_id}/vncrun.html?host=#{Setting[:plugin_redmine_online_meetings][:videoserver_host]}&port=#{26000+@object.server_id}&password=12345678", :width => "640"}
+%div
+  = link_to("&#9632; #{l(:link_to_stop_record_hangouts)}".html_safe, stop_record_meeting_agenda_path(@object), style: 'display: block; width: 170px; height: 20px; font-weight: bold; font-size: 14px; background: #F00; border-radius: 4px; padding: 10px; color: #FFF;')
 :javascript
   var continue_time = #{Setting[:plugin_redmine_online_meetings][:continue_time]}
   var timeout = #{Setting[:plugin_redmine_online_meetings][:timeout]}
@@ -15,7 +15,7 @@
         continue_time: #{Setting[:plugin_redmine_online_meetings][:continue_time].to_i},
         continue_time_notify: #{Setting[:plugin_redmine_online_meetings][:continue_time_notify]}
       })
-      if ((current_time+#{((Setting[:plugin_redmine_online_meetings][:continue_time] || 0).to_i + (Setting[:plugin_redmine_online_meetings][:continue_time_notify] || 0).to_i) * 60 }) < stop_time){
+      if ((current_time+#{((Setting[:plugin_redmine_online_meetings][:continue_time_notify] || 0).to_i) * 60 }) < stop_time){
         add_minutes = timeout;
       } else {
         add_minutes = parseInt(prompt('#{l(:prompt_continue_time)}', timeout));
@@ -23,18 +23,20 @@
       if (add_minutes){
         $.post('#{continue_record_meeting_agenda_path(@object)}', { continue_time: continue_time },function( data ){
           if (#{Setting[:plugin_redmine_online_meetings][:continue_time_notify] || 0} > 0){
-            cont_to(timeout);
+            cont_to(1, data.stop_time);
           }
         },"json");
       } else {
         setTimeout(function(){
-          alert('#{l(:notify_stop_recording)}')
+          $.get('#{stop_record_meeting_agenda_path(@object)}', function(){
+            alert('#{l(:notify_stop_recording)}');
+          })
         }, #{(Setting[:plugin_redmine_online_meetings][:continue_time_notify] || 0)*1000*60})
       }
     }, minutes*60000)
   }
 
   var stop_time = #{@object.end_time_utc.to_i}
-  cont_to(#{Setting[:plugin_redmine_online_meetings][:timeout] || 1});
+  cont_to(1, stop_time);
   console.log('starting record');
 

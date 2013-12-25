@@ -44,9 +44,9 @@ module OnlineMeetings
 
       def continue_record
         find_object
-        unless params[:continue_time].blank? || params[:continue_time].to_i == 0
+        unless @object.nil? || (! @object.is_recording) || params[:continue_time].blank? || params[:continue_time].to_i == 0
           #update video
-          video = VideoserverApi.call_api("recordings/#{@object.id}/update", :post, {'video[stop_time]' => Time.now.to_i + params[:continue_time].to_i})
+          video = VideoserverApi.call_api("recordings/#{@object.record_video_id}/update", :post, {'video[stop_time]' => Time.now.to_i + params[:continue_time].to_i})
           render json: {minutes: params[:continue_time], stop_time: video['stop_time'], id: video['id']}
         end
       end
@@ -54,7 +54,7 @@ module OnlineMeetings
       def start_record
         find_object
         if @object.recordable?(User.current) && ((VideoserverApi.call_api("avaiables")["count"] || 0).try(:to_i) > 0)
-          @video = VideoserverApi.call_api(File.basename(@object.online_meeting_url) + "/start_record")
+          @video = VideoserverApi.call_api(File.basename(@object.online_meeting_url) + "/start_record/#{@object.end_time_utc.to_i}")
           @object.is_recording = true
           @object.record_video_id = (@video['id'] || 0).to_i
           @object.server_id = (@video['server_id'] || 0).to_i

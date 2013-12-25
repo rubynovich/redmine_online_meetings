@@ -24,6 +24,7 @@ class VideoserverApi
   def call_api(function, method=:get, data={})
     url = "http#{'s' if @use_https}://#{@host}#{':'+(@port || '')  .to_s unless self.port.blank? || @port.try(:to_i) == 80}/api/#{function}"
     c = Curl::Easy.new(url)
+    Rails.logger.info url
     #raise "http#{'s' if @use_https}://#{@host}#{':'+(@port || '')  .to_s unless self.port.blank? || @port.try(:to_i) == 80}/api/#{function}"
     c.http_auth_types = :digest
     c.username = @username
