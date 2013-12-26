@@ -19,7 +19,7 @@ module OnlineMeetingAgendaPatch
     self.meeting_contacts.each do |cont|
       if cont.contact.mail.present?
         emails << cont.contact.mail
-        cont.contact.phone.split(',').each do |phone|
+        cont.contact.mobile_phone.split(',').each do |phone|
           phone.gsub!(/\D/,'')
           phone.gsub!(/^8/,'7')
           if phone =~ /^79/ && (phone.length == 11)
