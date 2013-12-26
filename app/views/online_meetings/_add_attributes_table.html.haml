@@ -2,6 +2,11 @@
   %th= l(:label_for_online_meeting)
   - if item.online_meeting_url.present?
     %td
+      - if params[:show_time]='da'
+        end time utc
+        %span= end_time_utc.to_i
+        time now utc
+        %span=Time.now.utc.to_i
       = link_to(l(:link_to_apply_hangouts), item.online_meeting_url, :target => :new, class: 'icon icon-move')
       - if item.is_recording
         = link_to(l(:link_to_open_record_hangouts), start_record_meeting_agenda_path(item), :id=>'open_video_record', class: 'icon icon-server-authentication')

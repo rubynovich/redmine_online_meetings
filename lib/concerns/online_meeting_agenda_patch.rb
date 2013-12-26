@@ -60,7 +60,7 @@ module OnlineMeetingAgendaPatch
 
   def recordable?(by_user=nil)
     user_condition = by_user.nil? ? true : (by_user.id == self.author_id)
-    (! self.is_recording) && self.is_online? && user_condition && (self.end_time_utc.to_i > Time.now.to_i)
+    (! self.is_recording) && self.is_online? && user_condition && (self.end_time_utc.to_i > Time.now.utc.to_i)
   end
 
 
