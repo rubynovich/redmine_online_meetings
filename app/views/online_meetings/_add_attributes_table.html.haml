@@ -2,7 +2,7 @@
   %th= l(:label_for_online_meeting)
   - if item.online_meeting_url.present?
     %td
-      - if params[:show_time]='da'
+      - if params[:show_time]=='da'
         end time utc
         %span= end_time_utc.to_i
         time now utc
