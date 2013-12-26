@@ -54,7 +54,7 @@ module OnlineMeetings
 
       def start_record
         find_object
-        if
+        unless @object || (@object.author_id == User.current.id)
           render_403
           return
         end
