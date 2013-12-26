@@ -48,17 +48,26 @@ module OnlineMeetings
           #update video
           video = VideoserverApi.call_api("recordings/#{@object.record_video_id}", :put, {'video[stop_time]' => Time.at(Time.now.to_i + params[:continue_time].to_i.minutes)})
           Rails.logger.info video.inspect
-          render json: {minutes: params[:continue_time], stop_time: video['stop_time'].to_time.to_i, id: video['id']}
+          render json: {minutes: params[:continue_time], stop_time: (video['stop_time'] || Time.now).to_time.to_i, id: video['id']}
         end
       end
 
       def start_record
         find_object
+        if
+          render_403
+          return
+        end
         if @object && (! @object.is_recording) && @object.recordable?(User.current) && ((VideoserverApi.call_api("avaiables")["count"] || 0).try(:to_i) > 0)
           @video = VideoserverApi.call_api(File.basename(@object.online_meeting_url) + "/start_record/#{@object.end_time_utc.to_i}")
           @object.class.where(:id => @object.id).update_all(is_recording: true, record_video_id: (@video['id'] || 0).to_i, server_id: (@video['server_id'] || 0).to_i)
         elsif @object.is_recording
           @video = VideoserverApi.call_api("recordings/#{@object.record_video_id}")
+        else
+          Rails.logger.error "ERROR FATALITY: object - #{@object.inspect}; avail - #{(VideoserverApi.call_api("avaiables")["count"] || 0).try(:to_i)} "
+          #@video = Video.last.attributes
+          render :text => "ERROR FATALITY: object - #{@object.inspect}; avail - #{(VideoserverApi.call_api("avaiables")["count"] || 0).try(:to_i)} "
+          return
         end
         respond_to do |format|
           format.json {render json: {status: @video}}
