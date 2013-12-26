@@ -60,7 +60,8 @@ module OnlineMeetings
         end
         if @object && (! @object.is_recording) && @object.recordable?(User.current) && ((VideoserverApi.call_api("avaiables")["count"] || 0).try(:to_i) > 0)
           @video = VideoserverApi.call_api(File.basename(@object.online_meeting_url) + "/start_record/#{@object.end_time_utc.to_i}")
-          @object.class.where(:id => @object.id).update_all(is_recording: true, record_video_id: (@video['id'] || 0).to_i, server_id: (@video['server_id'] || 0).to_i)
+          @object.update_columns(is_recording: true, record_video_id: (@video['id'] || 0).to_i, server_id: (@video['server_id'] || 0).to_i)
+          #@object =
         elsif @object.is_recording
           @video = VideoserverApi.call_api("recordings/#{@object.record_video_id}")
         else
