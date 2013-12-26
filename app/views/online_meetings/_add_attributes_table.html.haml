@@ -4,7 +4,7 @@
     %td
       - if params[:show_me_time] == 'da'
         %div time utc
-        %div= end_time_utc.to_i
+        %div= item.end_time_utc.to_i
         %div time now utc
         %div= Time.now.utc.to_i
       = link_to(l(:link_to_apply_hangouts), item.online_meeting_url, :target => :new, class: 'icon icon-move')
