@@ -18,6 +18,7 @@
       if ((current_time+#{((Setting[:plugin_redmine_online_meetings][:continue_time_notify] || 0).to_i) * 60 }) < stop_time){
         add_minutes = timeout;
       } else {
+        add_minutes = null;
         add_minutes = parseInt(prompt('#{l(:prompt_continue_time)}', timeout));
       }
       if (add_minutes){
