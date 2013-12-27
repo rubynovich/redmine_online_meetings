@@ -28,13 +28,15 @@
             cont_to(1, data.stop_time);
           }
         },"json");
-      } else {
-        setTimeout(function(){
-          $.get('#{stop_record_meeting_agenda_path(@object)}', function(){
-            alert('#{l(:notify_stop_recording)}');
-          })
-        }, #{(Setting[:plugin_redmine_online_meetings][:continue_time_notify] || 0)*1000*60})
       }
+      var timeout2 = (stop_time - parseInt(new Date().getTime() / 1000)) * 1000;
+      if (timeout2 < 1){ timeout2 = 1; }
+      setTimeout(function(){
+        $.get('#{stop_record_meeting_agenda_path(@object)}', function(){
+          alert('#{l(:notify_stop_recording)}');
+        })
+      }, timeout2 );
+
     }, minutes*60000)
   }
 
