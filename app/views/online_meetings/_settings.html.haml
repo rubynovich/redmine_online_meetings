@@ -91,3 +91,7 @@
   %div
     %label= l(:label_videoserver_password)
     = password_field_tag("settings[videoserver_password]", @settings[:videoserver_password])
+  %div
+    %label= l(:label_videoserver_nginx_proxy)
+    = hidden_field_tag("settings[videoserver_nginx_proxy]", "0")
+    = check_box_tag("settings[videoserver_nginx_proxy]", "1", @settings[:videoserver_nginx_proxy] == "1")

@@ -55,3 +55,4 @@ ru:
   label_videorecording_time_fix: "Сдвигать время для отображения записей на (минут)"
   prompt_continue_time: "Запись скоро закончится. Если Вы желаете ее продлить укажите количество минут на которое необходимо ее продолжить, либо нажминте отмену"
   notify_stop_recording: "Запись была остановленна."
+  label_videoserver_nginx_proxy: "Использовать nginx proxy (для https)"
