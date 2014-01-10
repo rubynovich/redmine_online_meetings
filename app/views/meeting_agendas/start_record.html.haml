@@ -23,7 +23,7 @@
         add_minutes = parseInt(prompt('#{l(:prompt_continue_time)}', timeout));
       }
       if (add_minutes){
-        $.post('#{url_for( {controller: 'meeting_agenda', action: 'continue_record', id: @object.try(:id)})}', { continue_time: continue_time },function( data ){
+        $.post('#{url_for( {controller: 'meeting_agendas', action: 'continue_record', id: @object.try(:id)})}', { continue_time: continue_time },function( data ){
           if (#{Setting[:plugin_redmine_online_meetings][:continue_time_notify] || 0} > 0){
             cont_to(1, data.stop_time);
           }
@@ -32,7 +32,7 @@
       var timeout2 = (stop_time - parseInt(new Date().getTime() / 1000)) * 1000;
       if (timeout2 < 1){ timeout2 = 1; }
       setTimeout(function(){
-        $.get('#{url_for( {controller: 'meeting_agenda', action: 'stop_record', id: @object.try(:id)})}', function(){
+        $.get('#{url_for( {controller: 'meeting_agendas', action: 'stop_record', id: @object.try(:id)})}', function(){
           alert('#{l(:notify_stop_recording)}');
         })
       }, timeout2 );
