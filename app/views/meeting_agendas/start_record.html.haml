@@ -1,7 +1,7 @@
 %div
   %iframe{:height => "484", :src => Setting[:plugin_redmine_online_meetings][:videoserver_nginx_proxy] == "1" ? "/videoserver/#{26000+@object.server_id}/vncrun.html?host=#{Setting[:plugin_redmine_online_meetings][:videoserver_host]}&port=#{26000+@object.server_id}&password=12345678" : "https://#{Setting[:plugin_redmine_online_meetings][:videoserver_host]}:#{26000+@object.server_id}/vncrun.html?host=#{Setting[:plugin_redmine_online_meetings][:videoserver_host]}&port=#{26000+@object.server_id}&password=12345678", :width => "640"}
 %div
-  = link_to("&#9632; #{l(:link_to_stop_record_hangouts)}".html_safe, {controller: 'meeting_agenda', action: 'stop_record', id: @object}, style: 'display: block; width: 170px; height: 20px; font-weight: bold; font-size: 14px; background: #F00; border-radius: 4px; padding: 10px; color: #FFF;')
+  = link_to("&#9632; #{l(:link_to_stop_record_hangouts)}".html_safe, {controller: 'meeting_agendas', action: 'stop_record', id: @object}, style: 'display: block; width: 170px; height: 20px; font-weight: bold; font-size: 14px; background: #F00; border-radius: 4px; padding: 10px; color: #FFF;')
 :javascript
   var continue_time = #{Setting[:plugin_redmine_online_meetings][:continue_time]}
   var timeout = #{Setting[:plugin_redmine_online_meetings][:timeout]}
