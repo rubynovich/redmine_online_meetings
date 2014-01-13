@@ -56,3 +56,5 @@ ru:
   prompt_continue_time: "Запись скоро закончится. Если Вы желаете ее продлить укажите количество минут на которое необходимо ее продолжить, либо нажминте отмену"
   notify_stop_recording: "Запись была остановленна."
   label_videoserver_nginx_proxy: "Использовать nginx proxy (для https)"
+  link_to_no_view: перейдите по этой ссылке
+  label_for_link_to_no_view: *Если Вы не видите изображение то
