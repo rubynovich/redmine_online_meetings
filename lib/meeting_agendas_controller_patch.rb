@@ -44,11 +44,23 @@ module OnlineMeetings
 
       def continue_record
         find_object
-        unless @object.nil? || (! @object.is_recording) || params[:continue_time].blank? || params[:continue_time].to_i == 0
+        unless @object.nil? || (! @object.is_recording) || params[:stop_time].blank? || params[:stop_time].to_i == 0
           #update video
-          video = VideoserverApi.call_api("recordings/#{@object.record_video_id}", :put, {'video[stop_time]' => Time.at(Time.now.to_i + params[:continue_time].to_i.minutes)})
+          video = VideoserverApi.call_api("recordings/#{@object.record_video_id}", :put, {'video[stop_time]' => Time.at(params[:stop_time].to_i)})
           Rails.logger.info video.inspect
-          render json: {minutes: params[:continue_time], stop_time: (video['stop_time'] || Time.now).to_time.to_i, id: video['id']}
+          render json: {stop_time: (video['stop_time']).to_time.to_i, id: video['id']}
+          return
+        end
+        unless @object.nil? || (! @object.is_recording) || params[:add_minutes].present? || params[:add_minutes.to_i] == 0
+          video = VideoserverApi.call_api("recordings/#{@object.record_video_id}", :put, {'video[stop_time]' => Time.at((@object.end_time_utc > Time.now.utc ? @object.end_time_utc : Time.now.utc) + params[:add_minutes].to_i.minutes)})
+          Rails.logger.info video.inspect
+          render json: {stop_time: (video['stop_time']).to_time.to_i, id: video['id']}
+          return
+        end
+        unless @object.nil? || (! @object.is_recording)
+          render json: {stop_time: @object.end_time_utc.to_i, video_id: @object.record_video_id}
+        else
+          render json: {stop_time: (Time.now.utc - 1.day).to_i}
         end
       end
 

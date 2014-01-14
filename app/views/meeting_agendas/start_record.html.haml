@@ -1,3 +1,4 @@
+%div#timer
 %div
   %iframe{:height => "484", :src => Setting[:plugin_redmine_online_meetings][:videoserver_nginx_proxy] == "1" ? "/videoserver/#{26000+@object.server_id}/vncrun.html?host=#{Setting[:plugin_redmine_online_meetings][:videoserver_host]}&port=#{26000+@object.server_id}&password=12345678" : "https://#{Setting[:plugin_redmine_online_meetings][:videoserver_host]}:#{26000+@object.server_id}/vncrun.html?host=#{Setting[:plugin_redmine_online_meetings][:videoserver_host]}&port=#{26000+@object.server_id}&password=12345678", :width => "640"}
 %div
@@ -6,31 +7,51 @@
 %div
   = link_to("&#9632; #{l(:link_to_stop_record_hangouts)}".html_safe, {controller: 'meeting_agendas', action: 'stop_record', id: @object}, style: 'display: block; width: 170px; height: 20px; font-weight: bold; font-size: 14px; background: #F00; border-radius: 4px; padding: 10px; color: #FFF;')
 :javascript
-  var continue_time = #{Setting[:plugin_redmine_online_meetings][:continue_time]}
-  var timeout = #{Setting[:plugin_redmine_online_meetings][:timeout]}
+  function startTime(ts){
+    var tm = new Date();
+    if (! ts){
+      tm = new Date(new Date().getTime() - ts*1000);
+    }
+    var h=tm.getHours();
+    var m=tm.getMinutes();
+    var s=tm.getSeconds();
+    m=checkTime(m);
+    s=checkTime(s);
+    document.getElementById('timer').innerHTML=h+":"+m+":"+s;
+    t=setTimeout('startTime(ts)',500);
+  }
+
+  function checkTime(i){
+    if (i<10)
+      {
+      i="0" + i;
+      }
+    return i;
+  }
+
+  var default_continue_time = #{Setting[:plugin_redmine_online_meetings][:continue_time]}
+  var default_timeout = #{Setting[:plugin_redmine_online_meetings][:timeout]}
   var cont_to = function(minutes, stop_time) {
     setTimeout(function(){
       var current_time = parseInt(new Date().getTime() / 1000);
       var add_minutes = null;
-      console.log({
-        timeout: timeout,
-        current_time: current_time,
-        continue_time: #{Setting[:plugin_redmine_online_meetings][:continue_time].to_i},
-        continue_time_notify: #{Setting[:plugin_redmine_online_meetings][:continue_time_notify]}
-      })
+      var cont_to = false
       if ((current_time+#{((Setting[:plugin_redmine_online_meetings][:continue_time_notify] || 0).to_i) * 60 }) < stop_time){
-        add_minutes = timeout;
-        console.log('timeout +');
+        cont_to = true
       } else {
         add_minutes = false;
         add_minutes = parseInt(prompt('#{l(:prompt_continue_time)}', timeout));
       }
       if (add_minutes){
-        $.post('#{url_for( {controller: 'meeting_agendas', action: 'continue_record', id: @object.try(:id)})}', { continue_time: continue_time },function( data ){
-          if (#{Setting[:plugin_redmine_online_meetings][:continue_time_notify] || 0} > 0){
-            cont_to(1, data.stop_time);
-          }
+        $.post('#{url_for( {controller: 'meeting_agendas', action: 'continue_record', id: @object.try(:id)})}', { stop_time: current_time+add_minutes*60 },function( data ){
+          cont_to(1, data.stop_time);
         },"json");
+      } else {
+        if (cont_to){
+          $.post('#{url_for( {controller: 'meeting_agendas', action: 'continue_record', id: @object.try(:id)})}', { },function( data ){
+            cont_to(1, data.stop_time);
+          },"json");
+        }
       }
       var timeout2 = (stop_time - parseInt(new Date().getTime() / 1000)) * 1000;
       if (timeout2 < 1){ timeout2 = 1; }
@@ -44,6 +65,7 @@
   }
 
   var stop_time = #{@object.end_time_utc.to_i}
+  startTime(#{@object.start_time_utc.to_i})
   cont_to(1, stop_time);
   console.log('starting record');
 
