@@ -13,10 +13,11 @@
   }
 :javascript
   var blink_state = false;
+  var fix_time = #{Time.now.to_i*1000} - new Date().getTime();
   function startTime(ts){
     var tm;
     if (ts){
-      tm = new Date(new Date().getTime() - ts*1000);
+      tm = new Date(new Date().getTime() - fix_time - ts*1000);
     } else {
       tm = new Date();
     }
