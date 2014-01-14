@@ -1,11 +1,10 @@
-%div#timer
 %div
   %iframe{:height => "484", :src => Setting[:plugin_redmine_online_meetings][:videoserver_nginx_proxy] == "1" ? "/videoserver/#{26000+@object.server_id}/vncrun.html?host=#{Setting[:plugin_redmine_online_meetings][:videoserver_host]}&port=#{26000+@object.server_id}&password=12345678" : "https://#{Setting[:plugin_redmine_online_meetings][:videoserver_host]}:#{26000+@object.server_id}/vncrun.html?host=#{Setting[:plugin_redmine_online_meetings][:videoserver_host]}&port=#{26000+@object.server_id}&password=12345678", :width => "640"}
 %div
   = l(:label_for_link_to_no_view)
   = link_to l(:link_to_no_view), Setting[:plugin_redmine_online_meetings][:videoserver_nginx_proxy] == "1" ? "/videoserver/#{26000+@object.server_id}/vncrun.html?host=#{Setting[:plugin_redmine_online_meetings][:videoserver_host]}&port=#{26000+@object.server_id}&password=12345678&go_back=true" : "https://#{Setting[:plugin_redmine_online_meetings][:videoserver_host]}:#{26000+@object.server_id}/vncrun.html?host=#{Setting[:plugin_redmine_online_meetings][:videoserver_host]}&port=#{26000+@object.server_id}&password=12345678&go_back=true"
 %div
-  = link_to("&#9632; #{l(:link_to_stop_record_hangouts)}".html_safe, {controller: 'meeting_agendas', action: 'stop_record', id: @object}, style: 'display: block; width: 170px; height: 20px; font-weight: bold; font-size: 14px; background: #F00; border-radius: 4px; padding: 10px; color: #FFF;')
+  = link_to("&#9632; #{l(:link_to_stop_record_hangouts)} <span id=\"timer\"></span>".html_safe, {controller: 'meeting_agendas', action: 'stop_record', id: @object}, style: 'display: block; width: 170px; height: 20px; font-weight: bold; font-size: 14px; background: #F00; border-radius: 4px; padding: 10px; color: #FFF;')
 :javascript
   function startTime(ts){
     var tm = new Date();
@@ -18,7 +17,7 @@
     m=checkTime(m);
     s=checkTime(s);
     document.getElementById('timer').innerHTML=h+":"+m+":"+s;
-    t=setTimeout(startTime(ts),500);
+    setTimeout(startTime(ts),500);
   }
 
   function checkTime(i){
