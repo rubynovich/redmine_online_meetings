@@ -3,7 +3,7 @@
 %div
   = l(:label_for_link_to_no_view)
   = link_to l(:link_to_no_view), Setting[:plugin_redmine_online_meetings][:videoserver_nginx_proxy] == "1" ? "/videoserver/#{26000+@object.server_id}/vncrun.html?host=#{Setting[:plugin_redmine_online_meetings][:videoserver_host]}&port=#{26000+@object.server_id}&password=12345678&go_back=true" : "https://#{Setting[:plugin_redmine_online_meetings][:videoserver_host]}:#{26000+@object.server_id}/vncrun.html?host=#{Setting[:plugin_redmine_online_meetings][:videoserver_host]}&port=#{26000+@object.server_id}&password=12345678&go_back=true"
-%div
+%div#stop-record-btn
   = link_to("&#9632; #{l(:link_to_stop_record_hangouts)} <span id=\"timer\"></span>".html_safe, {controller: 'meeting_agendas', action: 'stop_record', id: @object}, style: 'display: block; width: 190px; height: 20px; font-weight: bold; font-size: 14px; background: #F00; border-radius: 4px; padding: 10px; color: #FFF;')
 :css
   .blink{
@@ -13,7 +13,7 @@
   }
 :javascript
   var blink_state = false;
-
+  var running = true;
   function startTime(ts){
     if (ts){
       var t = new Date().getTime() + fix_time - ts*1000;
@@ -37,7 +37,9 @@
       m = '--';
       s = '--';
     }
-    document.getElementById('timer').innerHTML=h+'<span class="blink">:</span>'+m+'<span class="blink">:</span>'+s;
+    if (running){
+      document.getElementById('timer').innerHTML=h+'<span class="blink">:</span>'+m+'<span class="blink">:</span>'+s;
+    }
     if (blink_state){
       blink_state = false
       $('.blink').css('visibility', 'hidden');
@@ -87,6 +89,8 @@
       if (timeout2 < 1){ timeout2 = 1; }
       setTimeout(function(){
         $.get('#{url_for( {controller: 'meeting_agendas', action: 'stop_record', id: @object.try(:id)})}', function(){
+          running = false;
+          $('#stop-record-btn').hide();
           alert('#{l(:notify_stop_recording)}');
         })
       }, timeout2 );
