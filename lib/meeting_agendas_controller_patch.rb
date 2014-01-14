@@ -51,7 +51,7 @@ module OnlineMeetings
           render json: {stop_time: (video['stop_time']).to_time.to_i, id: video['id']}
           return
         end
-        unless @object.nil? || (! @object.is_recording) || params[:add_minutes].present? || params[:add_minutes.to_i] == 0
+        unless @object.nil? || (! @object.is_recording) || params[:add_minutes].present? || params[:add_minutes].to_i == 0
           video = VideoserverApi.call_api("recordings/#{@object.record_video_id}", :put, {'video[stop_time]' => Time.at((@object.end_time_utc > Time.now.utc ? @object.end_time_utc : Time.now.utc) + params[:add_minutes].to_i.minutes)})
           Rails.logger.info video.inspect
           render json: {stop_time: (video['stop_time']).to_time.to_i, id: video['id']}
