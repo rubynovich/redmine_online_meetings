@@ -72,7 +72,7 @@
         continue_to = true
       } else {
         add_minutes = false;
-        add_minutes = parseInt(prompt('#{l(:prompt_continue_time)}', timeout));
+        add_minutes = parseInt(prompt('#{l(:prompt_continue_time)}', default_continue_time));
       }
       if (add_minutes){
         $.post('#{url_for( {controller: 'meeting_agendas', action: 'continue_record', id: @object.try(:id)})}', { stop_time: current_time+add_minutes*60 },function( data ){
