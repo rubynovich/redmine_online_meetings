@@ -95,6 +95,8 @@
           running = false;
           $('#stop-record-btn').hide();
           alert('#{l(:notify_stop_recording)}');
+          window.location.href = "/meeting_agendas/#{@object.id}";
+          return
         })
       }, timeout2 );
 
