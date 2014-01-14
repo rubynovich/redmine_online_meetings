@@ -65,9 +65,9 @@
     setTimeout(function(){
       var current_time = parseInt(new Date().getTime() / 1000);
       var add_minutes = null;
-      var cont_to = false
+      var continue_to = false
       if ((current_time+#{((Setting[:plugin_redmine_online_meetings][:continue_time_notify] || 0).to_i) * 60 }) < stop_time){
-        cont_to = true
+        continue_to = true
       } else {
         add_minutes = false;
         add_minutes = parseInt(prompt('#{l(:prompt_continue_time)}', timeout));
@@ -77,7 +77,7 @@
           cont_to(1, data.stop_time);
         },"json");
       } else {
-        if (cont_to){
+        if (continue_to){
           $.post('#{url_for( {controller: 'meeting_agendas', action: 'continue_record', id: @object.try(:id)})}', { },function( data ){
             cont_to(1, data.stop_time);
           },"json");
