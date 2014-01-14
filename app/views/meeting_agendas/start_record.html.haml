@@ -20,8 +20,10 @@
     } else {
       var t = new Date().getTime()+ fix_time;
     }
+    var prepare = false;
     if (t < 0) {
       t = 0;
+      prepare = true;
     }
     var tm = new Date(t);
     var h=tm.getUTCHours();
@@ -30,6 +32,11 @@
     h=checkTime(h);
     m=checkTime(m);
     s=checkTime(s);
+    if (prepare){
+      h = '--';
+      m = '--';
+      s = '--';
+    }
     document.getElementById('timer').innerHTML=h+'<span class="blink">:</span>'+m+'<span class="blink">:</span>'+s;
     if (blink_state){
       blink_state = false
