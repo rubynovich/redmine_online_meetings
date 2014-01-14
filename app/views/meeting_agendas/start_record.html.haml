@@ -76,11 +76,13 @@
       }
       if (add_minutes){
         $.post('#{url_for( {controller: 'meeting_agendas', action: 'continue_record', id: @object.try(:id)})}', { stop_time: current_time+add_minutes*60 },function( data ){
+          stop_time = data.stop_time;
           cont_to(1, data.stop_time);
         },"json");
       } else {
         if (continue_to){
           $.post('#{url_for( {controller: 'meeting_agendas', action: 'continue_record', id: @object.try(:id)})}', { },function( data ){
+            stop_time = data.stop_time;
             cont_to(1, data.stop_time);
           },"json");
         }
