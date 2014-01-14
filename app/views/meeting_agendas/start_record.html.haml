@@ -60,38 +60,45 @@
     return i;
   }
   var fix_time = #{Time.now.to_i*1000} - (new Date().getTime());
-  var stop_time;
   console.log('fix_time = '+fix_time);
   var default_continue_time = #{Setting[:plugin_redmine_online_meetings][:continue_time]}
   var default_timeout = #{Setting[:plugin_redmine_online_meetings][:timeout]}
-  var cont_to = function(minutes, stop_time) {
+  var cont_to = function(minutes) {
     setTimeout(function(){
       var current_time = parseInt(new Date().getTime() / 1000);
       var add_minutes = null;
       var continue_to = false
-      if ((current_time+#{((Setting[:plugin_redmine_online_meetings][:continue_time_notify] || 0).to_i) * 60 }) < stop_time){
+      if ((current_time+#{((Setting[:plugin_redmine_online_meetings][:continue_time_notify] || 0).to_i) * 60 }) < window.stop_time){
         continue_to = true
       } else {
         console.log({
           ctime_plus: (current_time+#{((Setting[:plugin_redmine_online_meetings][:continue_time_notify] || 0).to_i) * 60 }),
-          stop_time: stop_time
+          stop_time: window.stop_time
         })
         add_minutes = false;
         add_minutes = parseInt(prompt('#{l(:prompt_continue_time)}', default_continue_time));
       }
       if (add_minutes){
         $.post('#{url_for( {controller: 'meeting_agendas', action: 'continue_record', id: @object.try(:id)})}', { stop_time: current_time+add_minutes*60 },function( data ){
-          stop_time = data.stop_time;
-          cont_to(1, data.stop_time);
+          window.stop_time = data.stop_time;
+          console.log({
+            act: 'add_minutes',
+            stop_time: window.stop_time
+          })
+          cont_to(1);
         },"json");
       } else {
         if (continue_to){
           $.post('#{url_for( {controller: 'meeting_agendas', action: 'continue_record', id: @object.try(:id)})}', { },function( data ){
-            //stop_time = data.stop_time;
-            cont_to(1, data.stop_time);
+            window.stop_time = data.stop_time;
+            console.log({
+              act: 'continue_to',
+              stop_time: window.stop_time
+            })
+            cont_to(1);
           },"json");
         } else {
-          var timeout2 = (stop_time - parseInt(new Date().getTime() / 1000)) * 1000;
+          var timeout2 = (window.stop_time - parseInt(new Date().getTime() / 1000)) * 1000;
           if (timeout2 < 1){ timeout2 = 1; }
           setTimeout(function(){
             $.get('#{url_for( {controller: 'meeting_agendas', action: 'stop_record', id: @object.try(:id)})}', function(){
@@ -107,7 +114,7 @@
     }, minutes*60000)
   }
 
-  var stop_time = #{@video['stop_time'].to_time.utc.to_i};
+  window.stop_time = #{@video['stop_time'].to_time.utc.to_i};
   startTime(#{@video['created_at'].to_time.utc.to_i});
   cont_to(1, stop_time);
   console.log('starting record');
