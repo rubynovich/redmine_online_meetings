@@ -17,7 +17,9 @@
     m=checkTime(m);
     s=checkTime(s);
     document.getElementById('timer').innerHTML=h+'<span style="text-decoration: blink;">:</span>'+m+'<span style="text-decoration: blink;">:</span>'+s;
-    setTimeout(startTime(ts),500);
+    setTimeout(function(){
+      startTime(ts);
+    },500);
   }
 
   function checkTime(i){
