@@ -13,13 +13,13 @@
   }
 :javascript
   var blink_state = false;
-  var fix_time = #{Time.now.to_i*1000} - new Date().getTime();
+
   function startTime(ts){
     var tm;
     if (ts){
       tm = new Date(new Date().getTime() + fix_time - ts*1000);
     } else {
-      tm = new Date();
+      tm = new Date(new Date().getTime()+ fix_time);
     }
     var h=tm.getUTCHours();
     var m=tm.getUTCMinutes();
@@ -46,7 +46,8 @@
       }
     return i;
   }
-
+  var fix_time = #{Time.now.to_i*1000} - (new Date().getTime());
+  console.log('fix_time = '+fix_time);
   var default_continue_time = #{Setting[:plugin_redmine_online_meetings][:continue_time]}
   var default_timeout = #{Setting[:plugin_redmine_online_meetings][:timeout]}
   var cont_to = function(minutes, stop_time) {
