@@ -17,7 +17,7 @@
   function startTime(ts){
     var tm;
     if (ts){
-      tm = new Date(new Date().getTime() - fix_time - ts*1000);
+      tm = new Date(new Date().getTime() + fix_time - ts*1000);
     } else {
       tm = new Date();
     }
