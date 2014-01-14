@@ -72,6 +72,10 @@
       if ((current_time+#{((Setting[:plugin_redmine_online_meetings][:continue_time_notify] || 0).to_i) * 60 }) < stop_time){
         continue_to = true
       } else {
+        console.log({
+          ctime_plus: (current_time+#{((Setting[:plugin_redmine_online_meetings][:continue_time_notify] || 0).to_i) * 60 }),
+          stop_time: stop_time
+        })
         add_minutes = false;
         add_minutes = parseInt(prompt('#{l(:prompt_continue_time)}', default_continue_time));
       }
@@ -86,20 +90,20 @@
             //stop_time = data.stop_time;
             cont_to(1, data.stop_time);
           },"json");
+        } else {
+          var timeout2 = (stop_time - parseInt(new Date().getTime() / 1000)) * 1000;
+          if (timeout2 < 1){ timeout2 = 1; }
+          setTimeout(function(){
+            $.get('#{url_for( {controller: 'meeting_agendas', action: 'stop_record', id: @object.try(:id)})}', function(){
+              running = false;
+              $('#stop-record-btn').hide();
+              alert('#{l(:notify_stop_recording)}');
+              window.location.href = "/meeting_agendas/#{@object.id}";
+              return
+            })
+          }, timeout2 );
         }
       }
-      var timeout2 = (stop_time - parseInt(new Date().getTime() / 1000)) * 1000;
-      if (timeout2 < 1){ timeout2 = 1; }
-      setTimeout(function(){
-        $.get('#{url_for( {controller: 'meeting_agendas', action: 'stop_record', id: @object.try(:id)})}', function(){
-          running = false;
-          $('#stop-record-btn').hide();
-          alert('#{l(:notify_stop_recording)}');
-          window.location.href = "/meeting_agendas/#{@object.id}";
-          return
-        })
-      }, timeout2 );
-
     }, minutes*60000)
   }
 
