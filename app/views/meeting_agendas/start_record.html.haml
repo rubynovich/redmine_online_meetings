@@ -9,7 +9,7 @@
 :javascript
   function startTime(ts){
     var tm = new Date();
-    if (! ts){
+    if (ts){
       tm = new Date(new Date().getTime() - ts*1000);
     }
     var h=tm.getHours();
@@ -18,7 +18,7 @@
     m=checkTime(m);
     s=checkTime(s);
     document.getElementById('timer').innerHTML=h+":"+m+":"+s;
-    t=setTimeout('startTime(ts)',500);
+    t=setTimeout(startTime(ts),500);
   }
 
   function checkTime(i){
@@ -64,8 +64,8 @@
     }, minutes*60000)
   }
 
-  var stop_time = #{@object.end_time_utc.to_i}
-  startTime(#{@object.start_time_utc.to_i})
+  var stop_time = #{@object.end_time_utc.to_i};
+  startTime(#{@object.start_time_utc.to_i});
   cont_to(1, stop_time);
   console.log('starting record');
 
