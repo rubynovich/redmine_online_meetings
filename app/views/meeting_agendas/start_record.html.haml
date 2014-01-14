@@ -16,7 +16,7 @@
     var s=tm.getSeconds();
     m=checkTime(m);
     s=checkTime(s);
-    document.getElementById('timer').innerHTML=h+":"+m+":"+s;
+    document.getElementById('timer').innerHTML=h+'<span style="text-decoration: blink;">:</span>'+m+'<span style="text-decoration: blink;">:</span>'+s;
     setTimeout(startTime(ts),500);
   }
 
