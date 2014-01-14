@@ -25,10 +25,10 @@
     document.getElementById('timer').innerHTML=h+'<span class="blink">:</span>'+m+'<span class="blink">:</span>'+s;
     if (blink_state){
       blink_state = false
-      $('.blink').hide();
+      $('.blink').css('visibility', 'hidden');
     } else {
       blink_state = true
-      $('.blink').show();
+      $('.blink').css('visibility', 'visible');
     }
     setTimeout(function(){
       startTime(ts);
