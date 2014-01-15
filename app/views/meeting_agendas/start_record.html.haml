@@ -1,3 +1,7 @@
+#dialog-box{style: 'display:none; position: fixed; left: 45%; width: 100px; height: 40px; top: 45%; border-radius: 10px; border: 1px solud #000; background: #fff;'}
+  %label= l(:prompt_continue_time)
+  %input#minutes-add{type: :integer}
+  %button#minutes-add-button= t(:add_minutes_button)
 %div
   %iframe{:height => "484", :src => Setting[:plugin_redmine_online_meetings][:videoserver_nginx_proxy] == "1" ? "/videoserver/#{26000+@object.server_id}/vncrun.html?host=#{Setting[:plugin_redmine_online_meetings][:videoserver_host]}&port=#{26000+@object.server_id}&password=12345678" : "https://#{Setting[:plugin_redmine_online_meetings][:videoserver_host]}:#{26000+@object.server_id}/vncrun.html?host=#{Setting[:plugin_redmine_online_meetings][:videoserver_host]}&port=#{26000+@object.server_id}&password=12345678", :width => "640"}
 %div
@@ -59,6 +63,27 @@
       }
     return i;
   }
+
+  function add_minutes(minutes){
+    var current_time = parseInt(new Date().getTime() / 1000);
+    $.post('#{url_for( {controller: 'meeting_agendas', action: 'continue_record', id: @object.try(:id)})}', { stop_time: current_time+minutes*60-fix_time },function( data ){
+      window.stop_time = data.stop_time;
+      console.log({
+        act: 'add_minutes',
+        stop_time: window.stop_time
+      })
+      cont_to(1);
+    },"json");
+  }
+
+
+  $(document).on('click','#minutes-add-button', function(){
+    var minutes = parseInt($('minutes-add').val());
+    add_minutes(minutes);
+    $('#dialog-box').fadeOut(1000);
+    window.minutes_dialog_showed = false;
+  })
+
   var fix_time = #{Time.now.to_i*1000} - (new Date().getTime());
   console.log('fix_time = '+fix_time);
   var default_continue_time = #{Setting[:plugin_redmine_online_meetings][:continue_time]}
@@ -67,49 +92,39 @@
     setTimeout(function(){
       var current_time = parseInt(new Date().getTime() / 1000);
       var add_minutes = null;
-      var continue_to = false
+      var continue_to = true;
       if ((current_time+#{((Setting[:plugin_redmine_online_meetings][:continue_time_notify] || 0).to_i) * 60 }) < window.stop_time){
-        continue_to = true
-      } else {
-        console.log({
-          ctime_plus: (current_time+#{((Setting[:plugin_redmine_online_meetings][:continue_time_notify] || 0).to_i) * 60 }),
-          stop_time: window.stop_time
-        })
         add_minutes = false;
-        add_minutes = parseInt(prompt('#{l(:prompt_continue_time)}', default_continue_time));
+      } else {
+        if (! window.minutes_dialog_showed){
+          $('#dialog-box').fadeIn(1000);
+          window.minutes_dialog_showed = true;
+        }
+        if (current_time >= window.stop_time){
+          continue_to = false;
+        }
       }
-      if (add_minutes){
-        $.post('#{url_for( {controller: 'meeting_agendas', action: 'continue_record', id: @object.try(:id)})}', { stop_time: current_time+add_minutes*60 },function( data ){
+      if (continue_to){
+        $.post('#{url_for( {controller: 'meeting_agendas', action: 'continue_record', id: @object.try(:id)})}', { },function( data ){
           window.stop_time = data.stop_time;
           console.log({
-            act: 'add_minutes',
+            act: 'continue_to',
             stop_time: window.stop_time
           })
           cont_to(1);
         },"json");
       } else {
-        if (continue_to){
-          $.post('#{url_for( {controller: 'meeting_agendas', action: 'continue_record', id: @object.try(:id)})}', { },function( data ){
-            window.stop_time = data.stop_time;
-            console.log({
-              act: 'continue_to',
-              stop_time: window.stop_time
-            })
-            cont_to(1);
-          },"json");
-        } else {
-          var timeout2 = (window.stop_time - parseInt(new Date().getTime() / 1000)) * 1000;
-          if (timeout2 < 1){ timeout2 = 1; }
-          setTimeout(function(){
-            $.get('#{url_for( {controller: 'meeting_agendas', action: 'stop_record', id: @object.try(:id)})}', function(){
-              running = false;
-              $('#stop-record-btn').hide();
-              alert('#{l(:notify_stop_recording)}');
-              window.location.href = "/meeting_agendas/#{@object.id}";
-              return
-            })
-          }, timeout2 );
-        }
+        var timeout2 = (window.stop_time - parseInt(new Date().getTime() / 1000)) * 1000;
+        if (timeout2 < 1){ timeout2 = 1; }
+        setTimeout(function(){
+          $.get('#{url_for( {controller: 'meeting_agendas', action: 'stop_record', id: @object.try(:id)})}', function(){
+            running = false;
+            $('#stop-record-btn').hide();
+            alert('#{l(:notify_stop_recording)}');
+            window.location.href = "/meeting_agendas/#{@object.id}";
+            return
+          })
+        }, timeout2 );
       }
     }, minutes*60000)
   }

@@ -58,3 +58,4 @@ ru:
   label_videoserver_nginx_proxy: "Использовать nginx proxy (для https)"
   link_to_no_view: перейдите по этой ссылке
   label_for_link_to_no_view: Если Вы не видите изображение то
+  add_minutes_button: добавить
