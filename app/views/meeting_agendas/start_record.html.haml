@@ -1,4 +1,4 @@
-#dialog-box{style: 'display:none; position: fixed; left: 45%; width: 100px; height: 40px; top: 45%; border-radius: 10px; border: 1px solud #000; background: #fff;'}
+#dialog-box{style: 'display:none; position: fixed; left: 45%; width: 300px; height: 40px; top: 45%; border-radius: 10px; border: 1px solid #000; background-color: #fff;'}
   %label= l(:prompt_continue_time)
   %input#minutes-add{type: :integer}
   %button#minutes-add-button= t(:add_minutes_button)
@@ -72,6 +72,7 @@
         act: 'add_minutes',
         stop_time: window.stop_time
       })
+      window.minutes_dialog_showed = false;
       cont_to(1);
     },"json");
   }
@@ -81,7 +82,7 @@
     var minutes = parseInt($('minutes-add').val());
     add_minutes(minutes);
     $('#dialog-box').fadeOut(1000);
-    window.minutes_dialog_showed = false;
+
   })
 
   var fix_time = #{Time.now.to_i*1000} - (new Date().getTime());
