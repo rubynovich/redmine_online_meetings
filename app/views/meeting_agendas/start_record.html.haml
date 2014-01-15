@@ -1,7 +1,8 @@
-#dialog-box{style: 'display:none; position: fixed; left: 45%; width: 300px; height: 40px; top: 45%; border-radius: 10px; border: 1px solid #000; background-color: #fff;'}
+#dialog-box{style: 'display:none; position: fixed; left: 45%; width: 300px; height: 100px; padding: 5px; top: 45%; border-radius: 10px; border: 1px solid #000; background-color: #fff;'}
   %label= l(:prompt_continue_time)
   %input#minutes-add{type: :integer}
   %button#minutes-add-button= t(:add_minutes_button)
+  %button#minutes-cancel-button= t(:cancel_minutes_button)
 %div
   %iframe{:height => "484", :src => Setting[:plugin_redmine_online_meetings][:videoserver_nginx_proxy] == "1" ? "/videoserver/#{26000+@object.server_id}/vncrun.html?host=#{Setting[:plugin_redmine_online_meetings][:videoserver_host]}&port=#{26000+@object.server_id}&password=12345678" : "https://#{Setting[:plugin_redmine_online_meetings][:videoserver_host]}:#{26000+@object.server_id}/vncrun.html?host=#{Setting[:plugin_redmine_online_meetings][:videoserver_host]}&port=#{26000+@object.server_id}&password=12345678", :width => "640"}
 %div
@@ -77,6 +78,9 @@
     },"json");
   }
 
+  $(document).on('click', '#minutes-cancel-button', function(){
+    $('#dialog-box').fadeOut(1000);
+  })
 
   $(document).on('click','#minutes-add-button', function(){
     var minutes = parseInt($('minutes-add').val());
