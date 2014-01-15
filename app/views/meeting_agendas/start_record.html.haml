@@ -67,7 +67,7 @@
 
   function add_minutes(minutes){
     var current_time = parseInt(new Date().getTime() / 1000);
-    $.post('#{url_for( {controller: 'meeting_agendas', action: 'continue_record', id: @object.try(:id)})}', { stop_time: current_time+minutes*60-fix_time },function( data ){
+    $.post('#{url_for( {controller: 'meeting_agendas', action: 'continue_record', id: @object.try(:id)})}', { stop_time: current_time+minutes*60 },function( data ){
       window.stop_time = data.stop_time;
       console.log({
         act: 'add_minutes',
