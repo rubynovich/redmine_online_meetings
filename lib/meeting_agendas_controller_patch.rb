@@ -58,7 +58,9 @@ module OnlineMeetings
           return
         end
         unless @object.nil? || (! @object.is_recording)
-          render json: {stop_time: @object.end_time_utc.to_i, video_id: @object.record_video_id}
+          video = VideoserverApi.call_api("recordings/#{@object.record_video_id}", :put, {})
+          render json: {stop_time: (video['stop_time']).to_time.to_i, id: video['id']}
+          #render json: {stop_time: @object.end_time_utc.to_i, video_id: @object.record_video_id}
         else
           render json: {stop_time: (Time.now.utc - 1.day).to_i}
         end
