@@ -93,11 +93,12 @@
   console.log('fix_time = '+fix_time);
   var default_continue_time = #{Setting[:plugin_redmine_online_meetings][:continue_time]}
   var default_timeout = #{Setting[:plugin_redmine_online_meetings][:timeout]}
+  window.continue_to = true;
   var cont_to = function(minutes) {
     setTimeout(function(){
       var current_time = parseInt(new Date().getTime() / 1000);
       var add_minutes = null;
-      var continue_to = true;
+      window.continue_to = true;
       if ((current_time+#{((Setting[:plugin_redmine_online_meetings][:continue_time_notify] || 0).to_i) * 60 }) < window.stop_time){
         add_minutes = false;
       } else {
@@ -106,10 +107,10 @@
           window.minutes_dialog_showed = true;
         }
         if (current_time >= window.stop_time){
-          continue_to = false;
+          window.continue_to = false;
         }
       }
-      if (continue_to){
+      if (window.continue_to){
         $.post('#{url_for( {controller: 'meeting_agendas', action: 'continue_record', id: @object.try(:id)})}', { },function( data ){
           window.stop_time = data.stop_time;
           console.log({
