@@ -9,8 +9,8 @@
       //  %div= Time.now.utc.to_i
       = link_to(l(:link_to_apply_hangouts), item.online_meeting_url, :target => :new, class: 'icon icon-move')
       - if item.is_recording && (User.current.id == item.author.id)
-        = link_to(l(:link_to_open_record_hangouts), {controller: 'meeting_agendas', action: 'start_record', id: item.try(:id)}, :id=>'open_video_record', class: 'icon icon-server-authentication', :target => '_blank')
-        = link_to(l(:link_to_stop_record_hangouts), {controller: 'meeting_agendas', action: 'stop_record', id: item.try(:id)}, class: 'icon icon-summary', :target => '_blank')
+        = link_to(l(:link_to_open_record_hangouts), {controller: 'meeting_agendas', action: 'start_record', id: item.try(:id)}, :id=>'open_video_record', class: 'icon icon-server-authentication', :target => '_new')
+        = link_to(l(:link_to_stop_record_hangouts), {controller: 'meeting_agendas', action: 'stop_record', id: item.try(:id)}, class: 'icon icon-summary')
       - elsif item.recordable?(User.current)
         = ((VideoserverApi.call_api("avaiables")["count"] || 0).to_i > 0) ? link_to(l(:link_to_start_record_hangouts), {controller: 'meeting_agendas', action: 'start_record', id: item.try(:id)}, :id=>'start_video_record', class: 'icon icon-server-authentication', :target => '_blank') : l(:no_free_servers)
   - else
