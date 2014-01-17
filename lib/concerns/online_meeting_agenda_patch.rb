@@ -60,7 +60,11 @@ module OnlineMeetingAgendaPatch
 
   def recordable?(by_user=nil)
     user_condition = by_user.nil? ? true : (by_user.id == self.author_id)
-    (! self.is_recording) && self.is_online? && user_condition && ((self.end_time_utc+(Setting[:plugin_redmine_online_meetings][:time_fix] || 0).to_i.minutes) > Time.now.utc)
+    (! self.is_recording) &&
+        self.is_online? &&
+        user_condition &&
+        ((self.end_time_utc+(Setting[:plugin_redmine_online_meetings][:time_fix] || 0).to_i.minutes) > Time.now.utc) &&
+        ((self.start_time_utc+(Setting[:plugin_redmine_online_meetings][:time_fix] || 0).to_i.minutes-(Setting[:plugin_redmine_online_meetings][:timeout] || 0).to_i.minutes) <= Time.now.utc)
   end
 
 

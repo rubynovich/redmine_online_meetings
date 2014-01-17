@@ -1,8 +1,35 @@
-#dialog-box{style: 'display:none; position: fixed; left: 45%; width: 300px; height: 100px; padding: 5px; top: 45%; border-radius: 10px; border: 1px solid #000; background-color: #fff;'}
+:css
+  .blink{
+    display: inline-block;
+    text-align: center;
+    width: 10px;
+  }
+  #dialog-box{
+    display:none;
+    position: fixed;
+    left: 45%;
+    width: 350px;
+    height: 100px;
+    padding: 5px;
+    top: 45%;
+    border-radius: 10px;
+    border: 1px solid #000;
+    background-color: #fff;
+  }
+  #dialog-box button, #dialog-box label, #dialog-box input{
+    padding: 5px;
+  }
+  .actions {
+    text-align: left;
+    width: 100%;
+  }
+#dialog-box
+  %h2= l(:label_for_continue_time) % Setting[:plugin_redmine_online_meetings][:continue_time_notify]
   %label= l(:prompt_continue_time)
   %input#minutes-add{type: :integer}
-  %button#minutes-add-button= t(:add_minutes_button)
-  %button#minutes-cancel-button= t(:cancel_minutes_button)
+  .actions
+    %button#minutes-add-button= t(:add_minutes_button)
+    %button#minutes-cancel-button= t(:cancel_minutes_button)
 %div
   %iframe{:height => "484", :src => Setting[:plugin_redmine_online_meetings][:videoserver_nginx_proxy] == "1" ? "/videoserver/#{26000+@object.server_id}/vncrun.html?host=#{Setting[:plugin_redmine_online_meetings][:videoserver_host]}&port=#{26000+@object.server_id}&password=12345678" : "https://#{Setting[:plugin_redmine_online_meetings][:videoserver_host]}:#{26000+@object.server_id}/vncrun.html?host=#{Setting[:plugin_redmine_online_meetings][:videoserver_host]}&port=#{26000+@object.server_id}&password=12345678", :width => "640"}
 %div
@@ -10,12 +37,7 @@
   = link_to l(:link_to_no_view), Setting[:plugin_redmine_online_meetings][:videoserver_nginx_proxy] == "1" ? "/videoserver/#{26000+@object.server_id}/vncrun.html?host=#{Setting[:plugin_redmine_online_meetings][:videoserver_host]}&port=#{26000+@object.server_id}&password=12345678&go_back=true" : "https://#{Setting[:plugin_redmine_online_meetings][:videoserver_host]}:#{26000+@object.server_id}/vncrun.html?host=#{Setting[:plugin_redmine_online_meetings][:videoserver_host]}&port=#{26000+@object.server_id}&password=12345678&go_back=true"
 %div#stop-record-btn
   = link_to("&#9632; #{l(:link_to_stop_record_hangouts)} <span id=\"timer\"></span>".html_safe, {controller: 'meeting_agendas', action: 'stop_record', id: @object}, style: 'display: block; width: 200px; height: 20px; font-weight: bold; font-size: 14px; background: #F00; border-radius: 4px; padding: 10px; color: #FFF;')
-:css
-  .blink{
-    display: inline-block;
-    text-align: center;
-    width: 10px;
-  }
+
 :javascript
   var blink_state = false;
   var running = true;

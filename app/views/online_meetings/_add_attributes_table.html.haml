@@ -8,6 +8,7 @@
       //  %div time now utc
       //  %div= Time.now.utc.to_i
       = link_to(l(:link_to_apply_hangouts), item.online_meeting_url, :target => :new, class: 'icon icon-move')
+      //=  (! item.is_recording).inspect
       - if item.is_recording && (User.current.id == item.author.id)
         = link_to(l(:link_to_open_record_hangouts), {controller: 'meeting_agendas', action: 'start_record', id: item.try(:id)}, :id=>'open_video_record', class: 'icon icon-server-authentication', :target => '_new')
         = link_to(l(:link_to_stop_record_hangouts), {controller: 'meeting_agendas', action: 'stop_record', id: item.try(:id)}, class: 'icon icon-summary')

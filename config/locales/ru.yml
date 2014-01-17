@@ -53,7 +53,8 @@ ru:
   label_videorecording_continue_time_notify: "Оповещать о продлении за (минут) до окончании записи"
   label_videorecording_settings: "Параметры видеозаписи"
   label_videorecording_time_fix: "Сдвигать время для отображения записей на (минут)"
-  prompt_continue_time: "Запись скоро закончится. Если Вы желаете ее продлить укажите количество минут на которое необходимо ее продолжить (отсчет от текущего момента), либо нажминте отмену"
+  label_for_continue_time: Видеозапись совещания будет остановлена через %s минут.
+  prompt_continue_time: Укажите количество минут для продления видеозаписи
   notify_stop_recording: "Запись была остановленна."
   label_videoserver_nginx_proxy: "Использовать nginx proxy (для https)"
   link_to_no_view: перейдите по этой ссылке
