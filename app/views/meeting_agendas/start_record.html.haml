@@ -24,7 +24,8 @@
     width: 100%;
   }
 #dialog-box
-  %h5= l(:label_for_continue_time) % Setting[:plugin_redmine_online_meetings][:continue_time_notify]
+  %div
+    %b= l(:label_for_continue_time) % Setting[:plugin_redmine_online_meetings][:continue_time_notify]
   %label= l(:prompt_continue_time)
   %input#minutes-add{type: :integer}
   .actions
