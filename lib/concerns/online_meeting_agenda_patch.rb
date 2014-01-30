@@ -80,6 +80,7 @@ module OnlineMeetingAgendaPatch
 
   def notify_members_and_contacts
     emails, mobile_phones = add_calendar_event
+    emails ||= []
     if self.is_online?
       emails.each do |email|
         message_text = self.text_replace(Setting[:plugin_redmine_online_meetings][:mail_message_text], email)
