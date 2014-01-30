@@ -15,9 +15,9 @@ module OnlineMeetingAgendaPatch
     end
     #internal_emails = emails.dup
     #raise emails.inspect
-
-    self.meeting_contacts.each do |cont|
-      if cont.contact.mail.present?
+    meeting_contacts_arr = self.meeting_contacts || []
+    meeting_contacts_arr.each do |cont|
+      if cont.contact.present? && cont.contact.mail.present?
         emails << cont.contact.mail
         (cont.contact.mobile_phone || "").split(',').each do |phone|
           phone.gsub!(/\D/,'')
