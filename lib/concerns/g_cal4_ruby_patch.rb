@@ -9,7 +9,7 @@ module GCal4RubyPatch
         if service.nil? || force
           service = GCal4Ruby::Service.new
           service.hangout_domain = Setting[:plugin_redmine_online_meetings][:hangout_domain]
-          service.authenticate(Setting[:plugin_redmine_online_meetings][:account_login], Setting[:plugin_redmine_online_meetings][:account_password])
+          service.authenticate(Setting[:plugin_redmine_online_meetings][:account_login], Setting[:plugin_redmine_online_meetings][:account_password]) if Setting[:plugin_redmine_online_meetings][:account_login].present?
           self.class_variable_set(:@@get, service)
         end
         service

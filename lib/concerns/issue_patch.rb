@@ -12,7 +12,7 @@ module OnlineMeetingIssuePatch
   end
 
   def setup_calendar_for_meeting
-    meeting_member.meeting_agenda.add_calendar_event if @old_status_id != self.status_id
+    meeting_member.meeting_agenda.add_calendar_event if Setting[:plugin_redmine_online_meetings][:account_login].present? && (@old_status_id != self.status_id)
     #if self.status_id == (Setting[:plugin_redmine_online_meetings][:failure_issue_status] || nil).try(:to_i)
       #calendar_update
     #  return true

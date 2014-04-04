@@ -28,30 +28,32 @@ module OnlineMeetingAgendaPatch
         end
       end
     end
-    #raise emails.inspect
-    service = GCal4Ruby::Service.get
-    if self.online_meeting_uid
-      event = GCal4Ruby::Event.find(service, {:id => self.online_meeting_uid})
+
+    if Setting[:plugin_redmine_online_meetings][:account_login].present? && (@old_status_id != self.status_id)
+      service = GCal4Ruby::Service.get
+      if self.online_meeting_uid
+        event = GCal4Ruby::Event.find(service, {:id => self.online_meeting_uid})
+      end
+      unless event
+        event = GCal4Ruby::Event.new(service)
+      end
+      event.calendar = service.calendars.first
+      event.title = self.subject
+      fix_time = (Setting[:plugin_redmine_online_meetings][:fix_time].try(:to_i) || 0).minutes
+      event.start_time = (self.meet_on + self.start_time.seconds_since_midnight.to_i.second).utc + fix_time
+      event.end_time = (self.meet_on + self.end_time.seconds_since_midnight.to_i.second).utc + fix_time
+      event.visibility = :private
+      event.status = :confirmed
+      event.transparency = :busy
+      event.is_video_conference = self.is_online?
+      event.attendees = emails.map{|email| {email: email}}
+      event.content = self.text_replace(Setting[:plugin_redmine_online_meetings][:calendar_message_text].dup || "")
+      event.full_save
+      #event.to_xml.inspect
+      #raise event.alternate_uri.inspect
+      self.online_meeting_url = event.alternate_uri
+      self.online_meeting_uid = event.id
     end
-    unless event
-      event = GCal4Ruby::Event.new(service)
-    end
-    event.calendar = service.calendars.first
-    event.title = self.subject
-    fix_time = (Setting[:plugin_redmine_online_meetings][:fix_time].try(:to_i) || 0).minutes
-    event.start_time = (self.meet_on + self.start_time.seconds_since_midnight.to_i.second).utc + fix_time
-    event.end_time = (self.meet_on + self.end_time.seconds_since_midnight.to_i.second).utc + fix_time
-    event.visibility = :private
-    event.status = :confirmed
-    event.transparency = :busy
-    event.is_video_conference = self.is_online?
-    event.attendees = emails.map{|email| {email: email}}
-    event.content = self.text_replace(Setting[:plugin_redmine_online_meetings][:calendar_message_text].dup || "")
-    event.full_save
-    #event.to_xml.inspect
-    #raise event.alternate_uri.inspect
-    self.online_meeting_url = event.alternate_uri
-    self.online_meeting_uid = event.id
     self.class.skip_callback(:save)
     self.save(:validate => false)
     self.class.set_callback(:save)
@@ -87,7 +89,7 @@ module OnlineMeetingAgendaPatch
         Mailer.apply_online_meeting(email,self, message_text).deliver
       end
     end
-    if mobile_phones.count > 0
+    if Setting[:plugin_redmine_online_meetings][:account_sms_login].present? && (mobile_phones.count > 0)
       #SmsApi.email = Setting[:plugin_redmine_online_meetings][:account_sms_login]
       #SmsApi.password = Setting[:plugin_redmine_online_meetings][:account_sms_password]
       #SmsApi.login
