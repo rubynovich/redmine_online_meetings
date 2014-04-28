@@ -29,7 +29,7 @@ module OnlineMeetingAgendaPatch
       end
     end
 
-    if Setting[:plugin_redmine_online_meetings][:account_login].present? && (@old_status_id != self.status_id)
+    if Setting[:plugin_redmine_online_meetings][:account_login].present?# && (@old_status_id != self.status_id)
       service = GCal4Ruby::Service.get
       if self.online_meeting_uid
         event = GCal4Ruby::Event.find(service, {:id => self.online_meeting_uid})
