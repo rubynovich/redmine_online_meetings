@@ -86,7 +86,7 @@ module OnlineMeetingAgendaPatch
     if self.is_online?
       emails.each do |email|
         message_text = self.text_replace(Setting[:plugin_redmine_online_meetings][:mail_message_text], email)
-        Mailer.apply_online_meeting(email,self, message_text).deliver
+        Mailer.apply_online_meeting(email,self, message_text).deliver if self.online_meeting_url.present?
       end
     end
     if Setting[:plugin_redmine_online_meetings][:account_sms_login].present? && (mobile_phones.count > 0)
