@@ -53,6 +53,7 @@ ru:
   label_videorecording_continue_time_notify: "Оповещать о продлении за (минут) до окончании записи"
   label_videorecording_settings: "Параметры видеозаписи"
   label_videorecording_time_fix: "Сдвигать время для отображения записей на (минут)"
+  label_videorecording_time_fix_srv: "Сдвигать время сервера для начала записей на (минут)"
   label_for_continue_time: Видеозапись совещания будет остановлена через %s минут.
   prompt_continue_time: Укажите количество минут для продления видеозаписи
   notify_stop_recording: "Запись была остановленна."

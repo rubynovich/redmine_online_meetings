@@ -62,6 +62,9 @@
 %fieldset
   %legend= l(:label_videorecording_settings)
   %p
+    %label= l(:label_videorecording_time_fix_srv)
+    = text_field_tag("settings[time_fix_srv]", @settings[:time_fix_srv])
+  %p
     %label= l(:label_videorecording_time_fix)
     = text_field_tag("settings[time_fix]", @settings[:time_fix])
   %p

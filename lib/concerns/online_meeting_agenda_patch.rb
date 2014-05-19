@@ -65,8 +65,8 @@ module OnlineMeetingAgendaPatch
     (! self.is_recording) &&
         self.is_online? &&
         user_condition &&
-        ((self.end_time_utc+(Setting[:plugin_redmine_online_meetings][:time_fix] || 0).to_i.minutes) > Time.now.utc) &&
-        ((self.start_time_utc+(Setting[:plugin_redmine_online_meetings][:time_fix] || 0).to_i.minutes-(Setting[:plugin_redmine_online_meetings][:timeout] || 0).to_i.minutes) <= Time.now.utc)
+        ((self.end_time_utc+(Setting[:plugin_redmine_online_meetings][:time_fix_srv] || 0).to_i.minutes) > Time.now.utc) &&
+        ((self.start_time_utc+(Setting[:plugin_redmine_online_meetings][:time_fix_srv] || 0).to_i.minutes-(Setting[:plugin_redmine_online_meetings][:timeout] || 0).to_i.minutes) <= Time.now.utc)
   end
 
 
@@ -86,7 +86,7 @@ module OnlineMeetingAgendaPatch
     if self.is_online?
       emails.each do |email|
         message_text = self.text_replace(Setting[:plugin_redmine_online_meetings][:mail_message_text], email)
-        Mailer.apply_online_meeting(email,self, message_text).deliver if self.online_meeting_url.present?
+        Mailer.apply_online_meeting(email,self, message_text).deliver if self.online_meeting_url
       end
     end
     if Setting[:plugin_redmine_online_meetings][:account_sms_login].present? && (mobile_phones.count > 0)
