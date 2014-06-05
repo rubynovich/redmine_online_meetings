@@ -119,10 +119,10 @@ module OnlineMeetingAgendaPatch
       text.gsub!('{{external_text}}',l(:external_text))
       case self.external_place_type
         when 'building_object'
-          Rails.logger.debug('external building object'.red)
+          Rails.logger.error('external building object'.red)
           text.gsub!('{{address}}', "#{l(:external_building_template) % [self.address]}")
         when 'external_company'
-          Rails.logger.debug('external company'.red)
+          Rails.logger.error('external company'.red)
           text.gsub!('{{address}}', "#{l(:external_template) % [self.external_company.try(:name), (self.address.present? ? self.address : self.external_company.address)]}")
       end
     else
