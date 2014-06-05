@@ -121,7 +121,7 @@ module OnlineMeetingAgendaPatch
         when 'building_object'
           text.gsub!('{{address}}', "#{l(:external_building_template) % [self.address]}")
         when 'external_company'
-          text.gsub!('{{address}}', "#{l(:external_template) % [self.external_company.try(:name), self.external_company.address]}")
+          text.gsub!('{{address}}', "#{l(:external_template) % [self.external_company.try(:name), (self.address || self.external_company.address || '')]}")
       end
     else
       text.gsub!('{{external_text}}',l(:internal_text))
