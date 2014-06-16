@@ -37,7 +37,7 @@ module OnlineMeetingAgendaPatch
           phone.gsub!(/\D/,'')
           phone.gsub!(/^8/,'7')
           if phone =~ /^79/ && (phone.length == 11)
-            mobile_phones.merge!({phone => cont.user.email})
+            mobile_phones.merge!({phone => cont.user.becomes(Person).email})
           end
         end
       end
