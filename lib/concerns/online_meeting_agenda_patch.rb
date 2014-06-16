@@ -30,7 +30,6 @@ module OnlineMeetingAgendaPatch
     end
 
     meeting_members_sms_arr = self.meeting_members.where(user_id: Setting[:plugin_redmine_online_meetings][:send_internal_user_ids].to_s.split(',').map{|item| item.to_i}) || []
-    Rails.logger.info "Members to send sms #{meeting_members_sms_arr.map(&:user_id)}"
     meeting_members_sms_arr.each do |cont|
       if cont.user.present? && cont.user.mail.present?
         #emails << cont.contact.mail
@@ -43,6 +42,8 @@ module OnlineMeetingAgendaPatch
         end
       end
     end
+
+
 
     if Setting[:plugin_redmine_online_meetings][:account_login].present?# && (@old_status_id != self.status_id)
       service = GCal4Ruby::Service.get
@@ -108,6 +109,7 @@ module OnlineMeetingAgendaPatch
       #SmsApi.email = Setting[:plugin_redmine_online_meetings][:account_sms_login]
       #SmsApi.password = Setting[:plugin_redmine_online_meetings][:account_sms_password]
       #SmsApi.login
+      Rails.logger.info "Phones to send sms #{mobile_phones.join(';')}"
       sms = SMSC.new()
       sms.smsc_login = Setting[:plugin_redmine_online_meetings][:account_sms_login]
       sms.smsc_password = Digest::MD5.hexdigest(Setting[:plugin_redmine_online_meetings][:account_sms_password])
