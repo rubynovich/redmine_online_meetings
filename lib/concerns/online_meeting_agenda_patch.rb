@@ -32,8 +32,8 @@ module OnlineMeetingAgendaPatch
     meeting_members_sms_arr = self.meeting_members.where(user_id: Setting[:plugin_redmine_online_meetings][:send_internal_user_ids].to_s.split(',').map{|item| item.to_i}) || []
     meeting_members_sms_arr.each do |cont|
       if cont.user.present? && cont.user.mail.present?
-        #emails << cont.contact.mail
-        (cont.user.becomes(Person).sanitized_phones || "").split(', ').each do |phone|
+        #emails << cont.user.mail
+        (cont.user.becomes(Person).sanitized_phones || "").split(',').each do |phone|
           phone.gsub!(/\D/,'')
           phone.gsub!(/^8/,'7')
           if phone =~ /^79/ && (phone.length == 11)
