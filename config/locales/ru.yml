@@ -32,6 +32,7 @@ ru:
   external_text: "выездное"
   external_template: "Совещание состоится в компании %s по адресу: %s"
   internal_template: "Место проведения: %s"
+  external_building_template: "Место проведения: %s"
   internal_text: ""
   label_fix_time: "Сдвигать время в календаре на (минут)"
   label_meeting_failure_issue_status: "Статус отказа от участия в совещании"
