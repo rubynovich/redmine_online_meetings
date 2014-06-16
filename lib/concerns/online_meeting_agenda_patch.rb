@@ -30,6 +30,7 @@ module OnlineMeetingAgendaPatch
     end
 
     meeting_members_sms_arr = self.meeting_members.where(user_id: Setting[:plugin_redmine_online_meetings][:send_internal_user_ids].to_s.split(',').map{|item| item.to_i}) || []
+    Rails.logger.info "Members to send sms #{meeting_members_sms_arr.map(&:user_id)}"
     meeting_members_sms_arr.each do |cont|
       if cont.user.present? && cont.user.mail.present?
         #emails << cont.contact.mail
