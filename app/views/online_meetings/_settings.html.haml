@@ -32,6 +32,9 @@
   %div
     %label= l(:label_sms_phone)
     = text_field_tag("settings[sms_phone]", @settings[:sms_phone])
+  %div
+    %label= l(:label_send_internal_user_ids)
+    = text_field_tag("settings[send_internal_user_ids]", @settings[:send_internal_user_ids])
 %fieldset
   %legend= l(:label_mail_message_text)
   %div.help

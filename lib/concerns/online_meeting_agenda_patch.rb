@@ -29,6 +29,20 @@ module OnlineMeetingAgendaPatch
       end
     end
 
+    meeting_members_sms_arr = self.meeting_members.where(user_id: Setting[:plugin_redmine_online_meetings][:send_internal_user_ids].to_s.split(',')) || []
+    meeting_members_sms_arr.each do |cont|
+      if cont.user.present? && cont.user.mail.present?
+        #emails << cont.contact.mail
+        (cont.user.becomes(Person).sanitized_phones || "").split(', ').each do |phone|
+          phone.gsub!(/\D/,'')
+          phone.gsub!(/^8/,'7')
+          if phone =~ /^79/ && (phone.length == 11)
+            mobile_phones.merge!({phone => cont.user.email})
+          end
+        end
+      end
+    end
+
     if Setting[:plugin_redmine_online_meetings][:account_login].present?# && (@old_status_id != self.status_id)
       service = GCal4Ruby::Service.get
       if self.online_meeting_uid
