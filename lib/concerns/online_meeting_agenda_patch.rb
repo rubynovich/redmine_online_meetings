@@ -109,7 +109,7 @@ module OnlineMeetingAgendaPatch
       #SmsApi.email = Setting[:plugin_redmine_online_meetings][:account_sms_login]
       #SmsApi.password = Setting[:plugin_redmine_online_meetings][:account_sms_password]
       #SmsApi.login
-      Rails.logger.info "Phones to send sms #{mobile_phones.join(';')}"
+      Rails.logger.info "Phones to send sms #{mobile_phones.inspect}"
       sms = SMSC.new()
       sms.smsc_login = Setting[:plugin_redmine_online_meetings][:account_sms_login]
       sms.smsc_password = Digest::MD5.hexdigest(Setting[:plugin_redmine_online_meetings][:account_sms_password])
