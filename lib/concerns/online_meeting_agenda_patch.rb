@@ -37,7 +37,7 @@ module OnlineMeetingAgendaPatch
           phone.gsub!(/\D/,'')
           phone.gsub!(/^8/,'7')
           if phone =~ /^79/ && (phone.length == 11)
-            mobile_phones.merge!({phone => cont.user.becomes(Person).email})
+            mobile_phones.merge!({"+#{phone}" => cont.user.becomes(Person).email})
           end
         end
       end
@@ -99,6 +99,7 @@ module OnlineMeetingAgendaPatch
   def notify_members_and_contacts
     emails, mobile_phones = add_calendar_event
     emails ||= []
+    mobile_phones ||= {}
     if self.is_online?
       emails.each do |email|
         message_text = self.text_replace(Setting[:plugin_redmine_online_meetings][:mail_message_text], email)

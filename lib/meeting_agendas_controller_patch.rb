@@ -107,13 +107,13 @@ module OnlineMeetings
 
       def send_invites_with_patch
         (render_403; return false) unless can_send_invites?(@object)
-        @object.notify_members_and_contacts
+        @object.sidekiq_delay.notify_members_and_contacts
         send_invites_without_patch
       end
 
       def resend_invites_with_patch
         (render_403; return false) unless can_send_invites?(@object)
-        @object.notify_members_and_contacts
+        @object.sidekiq_delay.notify_members_and_contacts
         resend_invites_without_patch
       end
     end
