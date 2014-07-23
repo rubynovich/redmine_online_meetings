@@ -117,7 +117,7 @@ module OnlineMeetingAgendaPatch
       mobile_phones.each_pair do |recipient_phone, email|
         sms_text = (self.is_online? ? Setting[:plugin_redmine_online_meetings][:sms_online_text] : Setting[:plugin_redmine_online_meetings][:sms_text]).dup
         sms_text = self.text_replace(sms_text, email)
-        sms.send_sms(recipient_phone, sms_text, 0, 0, 0, 1, Setting[:plugin_redmine_online_meetings][:sms_phone])
+        sms.send_sms(recipient_phone, sms_text, 0, 0, 0, 0, Setting[:plugin_redmine_online_meetings][:sms_phone])
       end
     end
   end
