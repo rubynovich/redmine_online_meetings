@@ -64,3 +64,4 @@ ru:
   add_minutes_button: Продлить
   cancel_minutes_button: Отмена
   label_send_internal_user_ids: ID внутренних пользователей (через запятую) которым можно отправлять SMS о приглашении
+  label_send_advanced_user_ids: ID внутреннего пользователя для проверки внешних СМС

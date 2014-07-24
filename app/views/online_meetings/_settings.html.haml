@@ -35,6 +35,9 @@
   %div
     %label= l(:label_send_internal_user_ids)
     = text_field_tag("settings[send_internal_user_ids]", @settings[:send_internal_user_ids])
+  %div
+    %label= l(:label_send_advanced_user_ids)
+    = text_field_tag("settings[send_advanced_user_ids]", @settings[:send_advanced_user_ids])
 %fieldset
   %legend= l(:label_mail_message_text)
   %div.help
